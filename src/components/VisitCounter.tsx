@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const APP_NAMESPACE = 'sunflower-mrshuong-lekimlang';
+const APP_NAMESPACE = 'sunflower-teachers-lekimlang';
 const BASE_VISIT_OFFSET = 1250;
 const COUNTER_API_URL = `https://api.counterapi.dev/v1/${APP_NAMESPACE}/visits/up`;
 

@@ -9,12 +9,12 @@ export const SUNFLOWER_SLOGAN = {
   english: 'Shine Together, Speak Together',
   vietnamese: 'Như hoa hướng dương vươn tới ánh mặt trời',
   school: 'Trường Tiểu học Lê Kim Lăng — Môi trường ngôn ngữ giao tiếp 2025–2035',
-  author: 'Cô Lê Thị Thu Hương (Mrs. Huong) — Giáo viên Trường TH Lê Kim Lăng'
+  author: 'Tập thể giáo viên Tiếng Anh — Trường TH Lê Kim Lăng'
 };
 
 export const FOUNDER_NOTE = {
-  title: 'Lời nhắn truyền cảm hứng từ Mrs. Huong',
-  author: 'Cô Lê Thị Thu Hương',
+  title: 'Lời nhắn gửi từ các giáo viên Tiếng Anh',
+  author: 'Tổ Tiếng Anh',
   school: 'Trường Tiểu học Lê Kim Lăng',
   content: `Chào quý thầy cô thân thương,
 
@@ -135,7 +135,7 @@ export const SUNFLOWER_LEVELS: SunflowerGardenLevel[] = [
     title: 'Vườn hoa hoàng gia vàng óng',
     minStreak: 21,
     emoji: '👑🌻',
-    description: 'Vườn hướng dương trĩu hạt vàng óng ánh — Biểu tượng kiên trì bền bỉ của Mrs. Huong!',
+    description: 'Vườn hướng dương trĩu hạt vàng óng ánh — Biểu tượng kiên trì bền bỉ và tiến bộ mỗi ngày của thầy cô!',
     seedMultiplier: 100
   }
 ];

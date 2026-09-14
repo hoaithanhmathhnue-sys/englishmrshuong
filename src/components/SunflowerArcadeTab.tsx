@@ -275,7 +275,7 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
           <span className="text-2xl shrink-0">🌻</span>
           <div className="space-y-0.5">
             <div className="text-xs font-extrabold text-amber-800">
-              Mrs. Huong AI: "{encouragementToast.english}"
+              Lời động viên: "{encouragementToast.english}"
             </div>
             <div className="text-xs text-amber-700 font-medium">
               👉 {encouragementToast.vietnamese}
@@ -481,7 +481,7 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
                 {matchResult === 'correct' ? (
                   <span className="font-bold text-emerald-600">🎉 Xuất sắc! Bạn đã chọn đúng khẩu lệnh.</span>
                 ) : (
-                  <span className="font-bold text-amber-700">🌻 Hãy cùng Mrs. Huong nghe lại câu đúng nhé!</span>
+                  <span className="font-bold text-amber-700">🌻 Hãy cùng nghe lại câu đúng nhé!</span>
                 )}
               </div>
               <button
@@ -594,7 +594,7 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
               {scenarioAnswered && (
                 <div className="space-y-4 pt-4 border-t border-slate-100">
                   <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-                    <span className="font-bold">Lời khuyên sư phạm của Mrs. Huong: </span>
+                    <span className="font-bold">Lời khuyên sư phạm: </span>
                     <span>{currentScenario.pedagogicalTip}</span>
                   </div>
 
@@ -773,7 +773,7 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
                   {/* Lời khuyên sư phạm */}
                   {customAnswered && generatedScenario.pedagogicalTip && (
                     <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-                      <span className="font-bold">Lời khuyên sư phạm của Mrs. Huong: </span>
+                      <span className="font-bold">Lời khuyên sư phạm: </span>
                       <span>{generatedScenario.pedagogicalTip}</span>
                     </div>
                   )}

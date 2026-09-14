@@ -123,7 +123,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             </h1>
 
             <p className="text-yellow-100 text-sm sm:text-base font-medium max-w-2xl leading-relaxed">
-              {SUNFLOWER_SLOGAN.vietnamese} — Dấu ấn tâm huyết từ cô Lê Thị Thu Hương (Mrs. Huong), Trường Tiểu học Lê Kim Lăng. Giúp mỗi giáo viên tiểu học tự tin trao đổi, lan tỏa môi trường Tiếng Anh tự nhiên tới học trò thân yêu.
+              {SUNFLOWER_SLOGAN.vietnamese} — Sáng kiến tâm huyết từ các giáo viên Tiếng Anh Trường Tiểu học Lê Kim Lăng. Giúp mỗi thầy cô tự tin trao đổi, lan tỏa môi trường Tiếng Anh tự nhiên tới học sinh thân yêu.
             </p>
 
             {/* Quick Action CTAs */}
@@ -158,7 +158,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           <div className="lg:col-span-4 bg-white/15 backdrop-blur-md rounded-3xl p-5 border border-white/30 text-center space-y-3">
             <div className="text-4xl animate-bounce">🌻</div>
             <div className="text-base font-black text-white">
-              Vườn hướng dương Mrs. Huong
+              Vườn hướng dương rèn luyện
             </div>
             <p className="text-xs text-amber-100 leading-relaxed">
               "Mỗi ngày một câu, mỗi tháng mười câu — Từng bước một, góp gió thành bão!"
@@ -236,7 +236,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         )}
       </div>
 
-      {/* 3. Founder's Note from Mrs. Huong & Digital Sunflower Garden */}
+      {/* 3. Lời nhắn gửi từ các giáo viên Tiếng Anh & Digital Sunflower Garden */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Founder's Note (7 cols) */}
         <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-xs space-y-4">

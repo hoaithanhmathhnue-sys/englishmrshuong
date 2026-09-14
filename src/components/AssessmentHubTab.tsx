@@ -371,7 +371,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
               <div className="space-y-2 py-2">
                 <div className="text-xs text-slate-600 italic font-serif-body">Chứng nhận danh dự trao tặng cho Thầy/Cô:</div>
                 <div className="text-2xl sm:text-3xl font-black text-amber-900 tracking-wide font-serif-cert">
-                  {teacherName || 'Cô Lê Thị Thu Hương'}
+                  {teacherName || 'Thầy/Cô Giáo Viên'}
                 </div>
                 <div className="text-sm font-semibold text-slate-700 font-sans">
                   {teacherSchool || 'Trường Tiểu học Lê Kim Lăng'}
@@ -400,14 +400,14 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
                       TH Lê Kim Lăng<br/>Sunflower 2026
                     </span>
                   </div>
-                  <span className="text-[9px] text-amber-900 font-bold uppercase mt-1 font-sans">Dấu Ấn Mrs. Huong</span>
+                  <span className="text-[9px] text-amber-900 font-bold uppercase mt-1 font-sans">Tổ Tiếng Anh</span>
                 </div>
 
                 {/* Right: Signature */}
                 <div className="text-right space-y-1">
                   <div className="text-[11px] text-slate-600">Ngày {currentDate}</div>
-                  <div className="text-xs font-bold text-slate-900">Giáo Viên Phụ Trách Đề Án</div>
-                  <div className="italic text-amber-900 text-sm pt-2 font-serif-cert">Cô Lê Thị Thu Hương</div>
+                  <div className="text-xs font-bold text-slate-900">Đại Diện Tổ Tiếng Anh</div>
+                  <div className="italic text-amber-900 text-sm pt-2 font-serif-cert">Ban Chuyên Môn Tiếng Anh</div>
                   <div className="text-[10px] text-slate-500 font-sans">Trường Tiểu học Lê Kim Lăng</div>
                 </div>
               </div>

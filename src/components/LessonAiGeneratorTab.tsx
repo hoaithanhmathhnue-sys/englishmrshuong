@@ -431,7 +431,7 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
               AI soạn câu lệnh theo bài học
             </h1>
             <p className="text-amber-100 text-xs sm:text-sm leading-relaxed">
-              Nhập tên bài dạy hoặc <strong className="text-white">tải lên file DOCX / PDF</strong> giáo án, AI của Mrs. Huong sẽ tự động thiết kế ngay 4 câu lệnh Tiếng Anh tích hợp tương ứng 4 giai đoạn lên lớp kèm phiên âm IPA và cử chỉ TPR sinh động!
+              Nhập tên bài dạy hoặc <strong className="text-white">tải lên file DOCX / PDF</strong> giáo án, AI sư phạm sẽ tự động thiết kế ngay 4 câu lệnh Tiếng Anh tích hợp tương ứng 4 giai đoạn lên lớp kèm phiên âm IPA và cử chỉ TPR sinh động!
             </p>
           </div>
 

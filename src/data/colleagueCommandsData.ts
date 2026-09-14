@@ -184,11 +184,11 @@ export const COLLEAGUE_COMMANDS: CommandItem[] = [
   {
     id: 'col-11',
     teacherCall: "Let's practice English together!",
-    studentResponse: 'Yes! Step by step on Mrs. Huong App!',
+    studentResponse: 'Yes! Step by step on Sunflower App!',
     callIpa: '/lets ˈpræktɪs ˈɪŋɡlɪʃ təˈɡeðər/',
-    responseIpa: '/jes! step baɪ step ɒn ˈmɪsɪz huːŋ æp/',
+    responseIpa: '/jes! step baɪ step ɒn ˈsʌnˌflaʊər æp/',
     vietnameseTranslation: 'Chúng mình cùng luyện Tiếng Anh nhé!',
-    context: 'Rủ nhau tự học và ghi âm luyện phát âm trên Web App của Mrs. Huong.',
+    context: 'Rủ nhau tự học và ghi âm luyện phát âm trên Web App của trường.',
     gradeLevel: 'All',
     category: 'Giao Tiếp Đồng Nghiệp',
     tprCue: {

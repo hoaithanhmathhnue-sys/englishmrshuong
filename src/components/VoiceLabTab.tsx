@@ -279,13 +279,13 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-xs space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">
           <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-          <span>Interactive Pedagogical Voice Lab • Mrs. Huong AI</span>
+          <span>Interactive Pedagogical Voice Lab • Trợ lý AI</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
           Phòng luyện tương tác Voice AI sư phạm
         </h1>
         <p className="text-slate-500 text-xs sm:text-sm max-w-3xl leading-relaxed">
-          Hệ thống nhận diện giọng nói Web Speech AI so khớp thời gian thực, đánh giá độ chuẩn xác và phản hồi bằng lời động viên ấm áp của Mrs. Huong AI, giúp thầy cô tự tin làm chủ 4 sắc thái biểu cảm sư phạm tiểu học.
+          Hệ thống nhận diện giọng nói Web Speech AI so khớp thời gian thực, đánh giá độ chuẩn xác và phản hồi bằng lời động viên sư phạm ấm áp, giúp thầy cô tự tin làm chủ 4 sắc thái biểu cảm sư phạm tiểu học.
         </p>
 
         {/* Mobile Technical Notice (Table 6) */}
@@ -547,17 +547,17 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
                 <span className="italic">"{analysisResult.spokenText || 'Chưa nhận diện rõ'}"</span>
               </div>
 
-              {/* Mrs. Huong AI Warm Encouragement (Table 3) */}
-              {analysisResult.mrsHuongEncouragement && (
+              {/* Pedagogical Warm Encouragement (Table 3) */}
+              {analysisResult.pedagogicalEncouragement && (
                 <div className="p-4 rounded-2xl bg-amber-50/90 border-2 border-amber-300 text-amber-900 shadow-2xs flex items-start gap-3">
-                  <span className="text-2xl shrink-0">{analysisResult.mrsHuongEncouragement.icon || '🌻'}</span>
+                  <span className="text-2xl shrink-0">{analysisResult.pedagogicalEncouragement.icon || '🌻'}</span>
                   <div className="space-y-0.5 flex-1">
                     <div className="text-xs font-black text-amber-900 flex items-center gap-1.5">
-                      <span>Lời động viên từ Mrs. Huong AI:</span>
-                      <span className="text-amber-800">"{analysisResult.mrsHuongEncouragement.english}"</span>
+                      <span>Lời động viên sư phạm:</span>
+                      <span className="text-amber-800">"{analysisResult.pedagogicalEncouragement.english}"</span>
                     </div>
                     <div className="text-xs text-amber-800 font-semibold">
-                      👉 {analysisResult.mrsHuongEncouragement.vietnamese}
+                      👉 {analysisResult.pedagogicalEncouragement.vietnamese}
                     </div>
                   </div>
                 </div>

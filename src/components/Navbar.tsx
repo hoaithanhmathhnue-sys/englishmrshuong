@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const tabs = [
     { id: 'dashboard', label: 'Trang chủ', icon: Home, badge: null },
     { id: 'library', label: 'Thư viện 52 câu', icon: BookOpen, badge: '52 câu' },
-    { id: 'voicelab', label: 'Luyện Voice AI', icon: Mic, badge: 'Mrs. Huong' },
+    { id: 'voicelab', label: 'Luyện Voice AI', icon: Mic, badge: 'Chuẩn âm' },
     { id: 'aigenerator', label: 'AI soạn bài', icon: Sparkles, badge: 'Mới' },
     { id: 'arcade', label: 'Sunflower Arcade', icon: Gamepad2, badge: 'Game' },
     { id: 'certification', label: 'Chứng chỉ & Bảng vàng', icon: Award, badge: progress.masteredIds.length >= 5 ? 'Sẵn sàng' : null },
@@ -49,12 +49,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               🌻 2025–2035
             </span>
             <span className="hidden sm:inline">Trường Tiểu học Lê Kim Lăng — Môi trường ngôn ngữ giao tiếp</span>
-            <span className="sm:hidden font-bold">TH Lê Kim Lăng • Mrs. Huong</span>
+            <span className="sm:hidden font-bold">TH Lê Kim Lăng • Môi trường Tiếng Anh</span>
           </div>
           <div className="flex items-center gap-3 text-amber-100 text-[11px]">
             <span className="hidden md:flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5 text-yellow-200" />
-              <span>Chủ đề Hoa Hướng Dương • Dấu ấn Mrs. Huong</span>
+              <span>Chủ đề Hoa Hướng Dương • Biên tập bởi giáo viên Tiếng Anh</span>
             </span>
             <span className="hidden md:inline text-amber-200/60">|</span>
             <span className="text-white font-semibold">Mỗi ngày 1 câu • Mỗi tháng 10 câu</span>
@@ -81,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     Sunflower English
                   </span>
                   <span className="text-[10px] font-extrabold uppercase bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded-md hidden sm:inline-block border border-amber-200">
-                    Mrs. Huong
+                    Tổ Tiếng Anh
                   </span>
                 </div>
                 <p className="text-[11px] text-amber-800 font-semibold hidden sm:block leading-tight mt-0.5">

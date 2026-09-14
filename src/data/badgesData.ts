@@ -46,7 +46,7 @@ export const ALL_BADGES: BadgeItem[] = [
   {
     id: 'badge-7',
     title: 'Huy Hiệu Hoa Hướng Dương Vàng',
-    description: 'Huy hiệu vinh danh đặc biệt từ cô Lê Thị Thu Hương (Mrs. Huong) dành cho giáo viên kiên trì rèn luyện xuất sắc.',
+    description: 'Huy hiệu vinh danh đặc biệt từ tổ Tiếng Anh dành cho giáo viên kiên trì rèn luyện xuất sắc.',
     iconName: 'Award',
     requiredCondition: 'Hoàn thành bài kiểm tra và thuần thục từ 5 câu'
   }

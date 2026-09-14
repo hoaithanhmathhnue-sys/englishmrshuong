@@ -14,7 +14,12 @@ export interface SpeechAnalysisResult {
   }[];
   pedagogicalFeedback: string;
   intonationTip: string;
-  mrsHuongEncouragement: {
+  pedagogicalEncouragement: {
+    english: string;
+    vietnamese: string;
+    icon: string;
+  };
+  mrsHuongEncouragement?: {
     english: string;
     vietnamese: string;
     icon: string;
@@ -150,6 +155,7 @@ export function analyzeSpeechAccuracy(spoken: string, target: string): SpeechAna
       wordsDiff: [],
       pedagogicalFeedback: 'Tuyệt vời!',
       intonationTip: 'Giữ vững phản xạ khẩu lệnh tự nhiên.',
+      pedagogicalEncouragement: EXCELLENT_VOICE_FEEDBACK[0],
       mrsHuongEncouragement: EXCELLENT_VOICE_FEEDBACK[0]
     };
   }
@@ -188,24 +194,24 @@ export function analyzeSpeechAccuracy(spoken: string, target: string): SpeechAna
   // Generate teacher-friendly pedagogical feedback
   let pedagogicalFeedback = '';
   let intonationTip = '';
-  let mrsHuongEncouragement = VOICE_PRACTICE_ENCOURAGEMENTS[0];
+  let pedagogicalEncouragement = VOICE_PRACTICE_ENCOURAGEMENTS[0];
 
   if (accuracyScore >= 90) {
     pedagogicalFeedback = 'Xuất sắc! Giọng phát âm rất rõ ràng, tròn vành rõ chữ, chuẩn phong thái sư phạm tiểu học.';
     intonationTip = 'Mẹo: Khi hô lệnh này trên lớp, cô/thầy hãy kết hợp vỗ tay 2 nhịp và mỉm cười để tạo năng lượng tích cực cho học sinh.';
-    mrsHuongEncouragement = EXCELLENT_VOICE_FEEDBACK[Math.floor(Math.random() * EXCELLENT_VOICE_FEEDBACK.length)];
+    pedagogicalEncouragement = EXCELLENT_VOICE_FEEDBACK[Math.floor(Math.random() * EXCELLENT_VOICE_FEEDBACK.length)];
   } else if (accuracyScore >= 75) {
     pedagogicalFeedback = 'Rất tốt! Bạn đã phát âm đúng phần lớn từ khóa, học sinh sẽ dễ dàng tiếp thu khẩu lệnh này.';
     intonationTip = 'Mẹo: Hãy chú ý nhấn mạnh (stress) vào các động từ hành động và hạ giọng nhẹ ở cuối câu để tạo tính dứt khoát.';
-    mrsHuongEncouragement = VOICE_PRACTICE_ENCOURAGEMENTS[1];
+    pedagogicalEncouragement = VOICE_PRACTICE_ENCOURAGEMENTS[1];
   } else if (accuracyScore >= 50) {
     pedagogicalFeedback = 'Khá tốt! Một số từ phát âm hơi nhanh hoặc chưa rõ âm đuôi (ending sounds).';
     intonationTip = 'Mẹo: Trẻ tiểu học cần nghe rõ âm bật cuối (như /s/, /t/, /k/). Bạn hãy nghe mẫu ở chế độ 0.7x và nói chậm lại một nhịp.';
-    mrsHuongEncouragement = VOICE_PRACTICE_ENCOURAGEMENTS[2];
+    pedagogicalEncouragement = VOICE_PRACTICE_ENCOURAGEMENTS[2];
   } else {
     pedagogicalFeedback = 'Cần luyện tập thêm một chút. Hãy thư giãn cổ họng, nghe mẫu chậm 0.7x và nói to, dứt khoát vào micro.';
     intonationTip = 'Mẹo: Đừng ngại nói to hơn mức bình thường một chút, vì trong lớp học tiểu học, khẩu lệnh cần năng lượng và độ vang.';
-    mrsHuongEncouragement = VOICE_PRACTICE_ENCOURAGEMENTS[3];
+    pedagogicalEncouragement = VOICE_PRACTICE_ENCOURAGEMENTS[3];
   }
 
   return {
@@ -215,7 +221,8 @@ export function analyzeSpeechAccuracy(spoken: string, target: string): SpeechAna
     wordsDiff,
     pedagogicalFeedback,
     intonationTip,
-    mrsHuongEncouragement
+    pedagogicalEncouragement,
+    mrsHuongEncouragement: pedagogicalEncouragement
   };
 }
 

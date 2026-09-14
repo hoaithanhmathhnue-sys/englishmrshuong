@@ -346,7 +346,7 @@ export default function App() {
         onClose={() => setIsApiKeyModalOpen(false)}
       />
 
-      {/* Footer Sunflower - Trường TH Lê Kim Lăng & Mrs. Huong */}
+      {/* Footer Sunflower - Trường TH Lê Kim Lăng */}
       <footer className="bg-white border-t border-amber-200 mt-16 text-slate-600 no-print shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -361,7 +361,7 @@ export default function App() {
                     Sunflower English Garden • Trường TH Lê Kim Lăng
                   </span>
                   <span className="text-[11px] font-semibold text-amber-600">
-                    Sáng kiến phát triển chuyên môn 2025–2035 • Dấu ấn cô Lê Thị Thu Hương
+                    Sáng kiến phát triển chuyên môn 2025–2035 • Tổ Tiếng Anh Trường TH Lê Kim Lăng
                   </span>
                 </div>
               </div>
@@ -401,7 +401,7 @@ export default function App() {
               </div>
               <div>
                 <button onClick={() => handleNavigateTab('voicelab')} className="hover:text-amber-600 transition">
-                  🎙️ Voice Lab & Lời động viên Mrs. Huong
+                  🎙️ Voice Lab & Lời động viên sư phạm
                 </button>
               </div>
               <div>
@@ -446,7 +446,7 @@ export default function App() {
 
           <div className="pt-6 border-t border-amber-100 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2">
             <div>
-              © 2025–2035 Sunflower English Garden • Trường Tiểu học Lê Kim Lăng. Đồng hành bởi cô Lê Thị Thu Hương.
+              © 2025–2035 Sunflower English Garden • Trường Tiểu học Lê Kim Lăng. Biên tập bởi các giáo viên Tiếng Anh.
             </div>
             <div className="flex items-center gap-1 text-slate-500">
               <span>Được xây dựng với tình yêu thương dành cho giáo viên và học trò tiểu học</span>
