@@ -69,7 +69,7 @@ export const PRINTABLE_POSTERS: PosterTemplate[] = [
   {
     id: 'poster-rules',
     title: '5 CLASSROOM GOLDEN RULES',
-    subtitle: 'Nội Quy Vàng Lớp Học Tiếng Anh Tiểu Học Thân Thiện',
+    subtitle: 'Nội quy vàng lớp học tiếng Anh tiểu học thân thiện',
     theme: 'bg-blue-900 text-white',
     gradeRecommendation: 'Khối 1 - Khối 5',
     items: [
@@ -108,7 +108,7 @@ export const PRINTABLE_POSTERS: PosterTemplate[] = [
   {
     id: 'poster-commands',
     title: 'DAILY CALL & RESPONSE CHANTS',
-    subtitle: 'Bảng Khẩu Lệnh Hô - Đáp Thần Tốc Mỗi Ngày',
+    subtitle: 'Bảng khẩu lệnh hô - đáp thần tốc mỗi ngày',
     theme: 'bg-amber-600 text-white',
     gradeRecommendation: 'Khối 1 - Khối 3',
     items: [

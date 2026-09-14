@@ -13,7 +13,7 @@ export const SUNFLOWER_SLOGAN = {
 };
 
 export const FOUNDER_NOTE = {
-  title: 'Lời Nhắn Truyền Cảm Hứng Từ Mrs. Huong',
+  title: 'Lời nhắn truyền cảm hứng từ Mrs. Huong',
   author: 'Cô Lê Thị Thu Hương',
   school: 'Trường Tiểu học Lê Kim Lăng',
   content: `Chào quý thầy cô thân thương,
@@ -100,7 +100,7 @@ export interface SunflowerGardenLevel {
 export const SUNFLOWER_LEVELS: SunflowerGardenLevel[] = [
   {
     stage: 'seed',
-    title: 'Hạt Mầm Hướng Dương',
+    title: 'Hạt mầm hướng dương',
     minStreak: 0,
     emoji: '🌱',
     description: 'Hạt mầm vừa được gieo vào mảnh đất tri thức. Hãy rèn luyện mỗi ngày một câu!',
@@ -108,7 +108,7 @@ export const SUNFLOWER_LEVELS: SunflowerGardenLevel[] = [
   },
   {
     stage: 'sprout',
-    title: 'Chồi Non Vươn Lên',
+    title: 'Chồi non vươn lên',
     minStreak: 3,
     emoji: '🌿',
     description: 'Chồi non nhú lên hai lá xanh tươi tắn, hướng về phía ánh ban mai.',
@@ -116,7 +116,7 @@ export const SUNFLOWER_LEVELS: SunflowerGardenLevel[] = [
   },
   {
     stage: 'bud',
-    title: 'Nụ Hoa Chớm Nở',
+    title: 'Nụ hoa chớm nở',
     minStreak: 7,
     emoji: '🌼',
     description: 'Nụ hoa e ấp chuẩn bị khoe sắc vàng rạng ngời cùng lớp học.',
@@ -124,7 +124,7 @@ export const SUNFLOWER_LEVELS: SunflowerGardenLevel[] = [
   },
   {
     stage: 'bloom',
-    title: 'Hướng Dương Nở Rộ',
+    title: 'Hướng dương nở rộ',
     minStreak: 14,
     emoji: '🌻',
     description: 'Bông hoa hướng dương nở xòe rực rỡ, lan tỏa năng lượng tích cực tới học sinh.',
@@ -132,7 +132,7 @@ export const SUNFLOWER_LEVELS: SunflowerGardenLevel[] = [
   },
   {
     stage: 'golden',
-    title: 'Vườn Hoa Hoàng Gia Vàng Óng',
+    title: 'Vườn hoa hoàng gia vàng óng',
     minStreak: 21,
     emoji: '👑🌻',
     description: 'Vườn hướng dương trĩu hạt vàng óng ánh — Biểu tượng kiên trì bền bỉ của Mrs. Huong!',

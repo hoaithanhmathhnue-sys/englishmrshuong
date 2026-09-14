@@ -30,13 +30,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenApiKeyModal
 }) => {
   const tabs = [
-    { id: 'dashboard', label: 'Trang Chủ', icon: Home, badge: null },
-    { id: 'library', label: 'Thư Viện 52 Câu', icon: BookOpen, badge: '52 câu' },
+    { id: 'dashboard', label: 'Trang chủ', icon: Home, badge: null },
+    { id: 'library', label: 'Thư viện 52 câu', icon: BookOpen, badge: '52 câu' },
     { id: 'voicelab', label: 'Luyện Voice AI', icon: Mic, badge: 'Mrs. Huong' },
-    { id: 'aigenerator', label: 'AI Soạn Bài', icon: Sparkles, badge: 'Mới' },
+    { id: 'aigenerator', label: 'AI soạn bài', icon: Sparkles, badge: 'Mới' },
     { id: 'arcade', label: 'Sunflower Arcade', icon: Gamepad2, badge: 'Game' },
-    { id: 'certification', label: 'Chứng Chỉ & Bảng Vàng', icon: Award, badge: progress.masteredIds.length >= 5 ? 'Sẵn sàng' : null },
-    { id: 'soundboard', label: 'Soundboard Lớp Học', icon: Volume2, badge: '8 Âm' }
+    { id: 'certification', label: 'Chứng chỉ & Bảng vàng', icon: Award, badge: progress.masteredIds.length >= 5 ? 'Sẵn sàng' : null },
+    { id: 'soundboard', label: 'Soundboard lớp học', icon: Volume2, badge: '8 âm' }
   ];
 
   return (

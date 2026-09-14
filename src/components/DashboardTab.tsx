@@ -18,23 +18,51 @@ import {
   Users,
   MessageSquareHeart,
   Gamepad2,
-  HelpCircle
+  HelpCircle,
+  Clock,
+  Zap
 } from 'lucide-react';
-import { CommandItem, UserProgress } from '../types';
+import { CommandItem, UserProgress, LearningHistoryEntry, HistoryEntryType } from '../types';
 import { speakText, stopSpeaking } from '../utils/speech';
 import { SUNFLOWER_SLOGAN, FOUNDER_NOTE, getSunflowerGardenState } from '../data/sunflowerFeedbackData';
-import { VisitCounter } from './VisitCounter';
 
 interface DashboardTabProps {
   commands: CommandItem[];
   progress: UserProgress;
+  learningHistory: LearningHistoryEntry[];
   onNavigateTab: (tab: string, selectedCommandId?: string) => void;
   onToggleBookmark: (commandId: string) => void;
 }
 
+// Helper: format relative time in Vietnamese
+const formatRelativeTime = (isoString: string): string => {
+  const now = Date.now();
+  const then = new Date(isoString).getTime();
+  const diffMs = now - then;
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'Vừa xong';
+  if (mins < 60) return `${mins} phút trước`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} giờ trước`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days} ngày trước`;
+  return new Date(isoString).toLocaleDateString('vi-VN');
+};
+
+// Helper: icon + color per history type
+const HISTORY_TYPE_META: Record<HistoryEntryType, { icon: string; color: string }> = {
+  practice: { icon: '🎙️', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+  bookmark: { icon: '💛', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+  ai_generate: { icon: '✨', color: 'bg-amber-100 text-amber-800 border-amber-200' },
+  scenario_custom: { icon: '⚡', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+  mastered: { icon: '⭐', color: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
+  badge: { icon: '🏅', color: 'bg-rose-100 text-rose-800 border-rose-200' }
+};
+
 export const DashboardTab: React.FC<DashboardTabProps> = ({
   commands,
   progress,
+  learningHistory,
   onNavigateTab,
   onToggleBookmark
 }) => {
@@ -113,7 +141,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 className="px-5 py-2.5 rounded-2xl bg-amber-800/80 hover:bg-amber-900 text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-2 border border-white/20 backdrop-blur-xs hover:scale-[1.02]"
               >
                 <Sparkles className="w-4 h-4 text-yellow-300" />
-                <span>AI Soạn Câu Lệnh Theo Bài</span>
+                <span>AI soạn câu lệnh theo bài</span>
               </button>
 
               <button
@@ -130,7 +158,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           <div className="lg:col-span-4 bg-white/15 backdrop-blur-md rounded-3xl p-5 border border-white/30 text-center space-y-3">
             <div className="text-4xl animate-bounce">🌻</div>
             <div className="text-base font-black text-white">
-              Vườn Hướng Dương Mrs. Huong
+              Vườn hướng dương Mrs. Huong
             </div>
             <p className="text-xs text-amber-100 leading-relaxed">
               "Mỗi ngày một câu, mỗi tháng mười câu — Từng bước một, góp gió thành bão!"
@@ -153,9 +181,59 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
       </div>
 
-      {/* 2. Server-Side Visit Counter Bar */}
-      <div className="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-xs">
-        <VisitCounter />
+      {/* 2. Lịch Sử Học Gần Đây (thay thế Visit Counter) */}
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-amber-200/80 shadow-xs space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-amber-100">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+              <Clock className="w-4 h-4" />
+            </div>
+            <h2 className="text-sm font-extrabold text-slate-900">Lịch sử học gần đây</h2>
+          </div>
+          {learningHistory.length > 0 && (
+            <span className="text-[11px] text-slate-500 font-medium">
+              {learningHistory.length} hoạt động
+            </span>
+          )}
+        </div>
+
+        {learningHistory.length === 0 ? (
+          <div className="text-center py-6 space-y-2">
+            <div className="text-3xl">🌱</div>
+            <p className="text-xs text-slate-500 font-medium">
+              Chưa có hoạt động nào. Bắt đầu luyện tập để ghi lại dấu ấn đầu tiên!
+            </p>
+            <button
+              onClick={() => onNavigateTab('library')}
+              className="px-4 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold transition-colors"
+            >
+              Khám phá thư viện câu lệnh
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-1.5 max-h-[220px] overflow-y-auto">
+            {learningHistory.slice(0, 8).map(entry => {
+              const meta = HISTORY_TYPE_META[entry.type] || HISTORY_TYPE_META.practice;
+              return (
+                <div
+                  key={entry.id}
+                  className={`flex items-start gap-2.5 p-2.5 rounded-xl border ${meta.color} transition-colors text-xs`}
+                >
+                  <span className="text-base shrink-0 mt-0.5">{meta.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-slate-900 truncate">{entry.title}</div>
+                    {entry.details && (
+                      <div className="text-slate-600 truncate">{entry.details}</div>
+                    )}
+                  </div>
+                  <span className="text-[10px] text-slate-500 font-medium shrink-0 whitespace-nowrap">
+                    {formatRelativeTime(entry.timestamp)}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* 3. Founder's Note from Mrs. Huong & Digital Sunflower Garden */}
@@ -201,7 +279,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               </span>
             </div>
             <h3 className="text-lg font-black text-slate-900">
-              Vườn Hướng Dương Của Bạn
+              Vườn hướng dương của bạn
             </h3>
           </div>
 
@@ -305,7 +383,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
 
           {/* Right Action Box */}
           <div className="lg:col-span-4 bg-linear-to-b from-amber-50 to-yellow-50 p-5 rounded-3xl border border-amber-200 space-y-3 text-center">
-            <div className="text-xs font-bold text-slate-700">Luyện Nghe Mẫu Tức Thì</div>
+            <div className="text-xs font-bold text-slate-700">Luyện nghe mẫu tức thì</div>
 
             <div className="flex flex-col gap-2">
               <button
@@ -313,14 +391,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
               >
                 <Volume2 className={`w-4 h-4 ${isPlayingNormal ? 'animate-bounce text-yellow-200' : ''}`} />
-                <span>Nghe Mẫu Chuẩn 1.0x</span>
+                <span>Nghe mẫu chuẩn 1.0x</span>
               </button>
 
               <button
                 onClick={() => handlePlayAudio(0.7)}
                 className="w-full py-2 px-4 rounded-xl bg-white hover:bg-amber-100/60 text-slate-800 font-bold text-xs border border-amber-200 transition-colors flex items-center justify-center gap-1.5"
               >
-                <span>Nghe Chậm 0.7x (Rõ âm đuôi)</span>
+                <span>Nghe chậm 0.7x (rõ âm đuôi)</span>
               </button>
             </div>
 
@@ -418,7 +496,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             ✨
           </div>
           <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-amber-700 transition-colors">
-            AI Soạn Câu Lệnh Theo Bài
+            AI soạn câu lệnh theo bài
           </h3>
           <p className="text-xs text-slate-500 leading-relaxed">
             Chỉ cần nhập tên bài, AI sẽ tạo 4 khẩu lệnh ứng dụng trực tiếp tiết dạy.

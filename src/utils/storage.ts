@@ -1,26 +1,24 @@
-import { UserProgress, CommunityPost } from '../types';
+import { UserProgress, CommunityPost, LearningHistoryEntry } from '../types';
 import { INITIAL_COMMUNITY_POSTS } from '../data/communityData';
 
-const STORAGE_KEY_PROGRESS = 'ecc_primary_progress_v1';
+// Bumped to v2 to force-reset all demo data for existing users
+const STORAGE_KEY_PROGRESS = 'ecc_primary_progress_v2';
 const STORAGE_KEY_COMMUNITY = 'ecc_primary_community_v1';
+const STORAGE_KEY_HISTORY = 'ecc_primary_history_v1';
 
 const DEFAULT_PROGRESS: UserProgress = {
-  streak: 3,
+  streak: 0,
   lastActiveDate: new Date().toISOString().split('T')[0],
-  goldenSeeds: 25,
-  masteredIds: ['cmd-01', 'cmd-02', 'cmd-03'],
-  bookmarkedIds: ['cmd-01', 'cmd-04', 'cmd-06'],
-  practiceScores: {
-    'cmd-01': 95,
-    'cmd-02': 90,
-    'cmd-03': 88
-  },
+  goldenSeeds: 0,
+  masteredIds: [],
+  bookmarkedIds: [],
+  practiceScores: {},
   profile: {
-    name: 'Cô Nguyễn Lan Anh',
+    name: '',
     school: 'Trường Tiểu học Lê Kim Lăng',
     title: 'Giáo viên Tiểu học'
   },
-  unlockedBadgeIds: ['badge-1', 'badge-3'],
+  unlockedBadgeIds: [],
   quizCompleted: false,
   quizScore: 0
 };
@@ -36,7 +34,7 @@ export function loadUserProgress(): UserProgress {
     }
     const data: UserProgress = JSON.parse(raw);
     if (data.goldenSeeds === undefined) {
-      data.goldenSeeds = 25;
+      data.goldenSeeds = 0;
     }
     
     // Check and update streak
@@ -92,4 +90,41 @@ export function saveCommunityPosts(posts: CommunityPost[]): void {
   } catch (e) {
     console.error('Error saving community posts:', e);
   }
+}
+
+// --- Learning History CRUD ---
+const MAX_HISTORY_ENTRIES = 50;
+
+export function loadLearningHistory(): LearningHistoryEntry[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_HISTORY);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
+export function saveLearningHistory(entries: LearningHistoryEntry[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    // Keep only the most recent entries
+    const trimmed = entries.slice(0, MAX_HISTORY_ENTRIES);
+    localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(trimmed));
+  } catch (e) {
+    console.error('Error saving learning history:', e);
+  }
+}
+
+export function addLearningHistoryEntry(entry: Omit<LearningHistoryEntry, 'id' | 'timestamp'>): LearningHistoryEntry[] {
+  const entries = loadLearningHistory();
+  const newEntry: LearningHistoryEntry = {
+    ...entry,
+    id: `hist-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    timestamp: new Date().toISOString()
+  };
+  const updated = [newEntry, ...entries].slice(0, MAX_HISTORY_ENTRIES);
+  saveLearningHistory(updated);
+  return updated;
 }

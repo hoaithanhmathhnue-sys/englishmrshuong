@@ -21,10 +21,23 @@ export interface SpeechAnalysisResult {
   };
 }
 
-// Find preferred English voice
+// Cache preferred English voice — avoid repeated getVoices() calls (slow on mobile)
+let cachedVoice: SpeechSynthesisVoice | null | undefined = undefined;
+
 function getPreferredEnVoice(): SpeechSynthesisVoice | null {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
+  if (cachedVoice !== undefined) return cachedVoice;
+
   const voices = window.speechSynthesis.getVoices();
+  if (voices.length === 0) {
+    // Voices not yet loaded — schedule retry on voiceschanged
+    window.speechSynthesis.onvoiceschanged = () => {
+      cachedVoice = undefined;
+      getPreferredEnVoice();
+    };
+    return null;
+  }
+
   // Prefer natural US English voices
   const usVoices = voices.filter(v => v.lang === 'en-US' || v.lang.startsWith('en'));
   const naturalVoice = usVoices.find(v => 
@@ -34,7 +47,14 @@ function getPreferredEnVoice(): SpeechSynthesisVoice | null {
     v.name.includes('Jenny') ||
     v.name.includes('US English')
   );
-  return naturalVoice || usVoices[0] || voices[0] || null;
+  cachedVoice = naturalVoice || usVoices[0] || voices[0] || null;
+  return cachedVoice;
+}
+
+// Pre-warm voice cache on load
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  getPreferredEnVoice();
 }
 
 /**

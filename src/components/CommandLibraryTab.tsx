@@ -109,10 +109,10 @@ export const CommandLibraryTab: React.FC<CommandLibraryTabProps> = ({
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold mb-2">
               <span className="text-sm">🌻</span>
-              <span>Kho Tư Liệu Sư Phạm Chuẩn Hóa • Mrs. Huong</span>
+              <span>Kho tư liệu sư phạm chuẩn hóa • Mrs. Huong</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              Thư Viện Câu Lệnh Đút Túi 2.0
+              Thư viện câu lệnh đút túi 2.0
             </h1>
             <p className="text-slate-500 text-xs sm:text-sm mt-1 max-w-2xl">
               Hơn 50 câu khẩu lệnh thực tế phân chia rõ ràng: 10 câu bắt buộc trong tháng, Tiếng Anh môn Toán, Giao tiếp đồng nghiệp và Quản lý lớp học K-5.

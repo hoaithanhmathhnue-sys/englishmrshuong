@@ -126,3 +126,13 @@ export interface LessonGeneratorForm {
 
 export type SunflowerStage = 'seed' | 'sprout' | 'bud' | 'bloom' | 'golden';
 
+export type HistoryEntryType = 'practice' | 'bookmark' | 'ai_generate' | 'scenario_custom' | 'mastered' | 'badge';
+
+export interface LearningHistoryEntry {
+  id: string;
+  type: HistoryEntryType;
+  timestamp: string; // ISO string
+  title: string;
+  details?: string;
+}
+

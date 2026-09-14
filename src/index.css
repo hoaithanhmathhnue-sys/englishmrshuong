@@ -7,7 +7,11 @@
 }
 
 .font-serif-cert {
-  font-family: 'Cinzel', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+.font-serif-body {
+  font-family: 'Lora', Georgia, serif;
 }
 
 @media print {

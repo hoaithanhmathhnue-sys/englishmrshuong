@@ -39,11 +39,15 @@ import {
   loadUserProgress, 
   saveUserProgress, 
   loadCommunityPosts, 
-  saveCommunityPosts 
+  saveCommunityPosts,
+  loadLearningHistory,
+  addLearningHistoryEntry
 } from './utils/storage';
 import { 
   UserProgress, 
-  CommunityPost 
+  CommunityPost,
+  LearningHistoryEntry,
+  HistoryEntryType
 } from './types';
 import { 
   Sun,
@@ -63,6 +67,13 @@ export default function App() {
   const [posts, setPosts] = useState<CommunityPost[]>(loadCommunityPosts);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [learningHistory, setLearningHistory] = useState<LearningHistoryEntry[]>(loadLearningHistory);
+
+  // Helper to add a history entry
+  const logHistory = (type: HistoryEntryType, title: string, details?: string) => {
+    const updated = addLearningHistoryEntry({ type, title, details });
+    setLearningHistory(updated);
+  };
 
   // Sync progress to localStorage
   useEffect(() => {
@@ -85,6 +96,7 @@ export default function App() {
 
   // Toggle Bookmark
   const handleToggleBookmark = (commandId: string) => {
+    const wasBookmarked = progress.bookmarkedIds.includes(commandId);
     setProgress(prev => {
       const isBookmarked = prev.bookmarkedIds.includes(commandId);
       const newBookmarks = isBookmarked
@@ -102,6 +114,15 @@ export default function App() {
         unlockedBadgeIds: newBadges
       };
     });
+    // Log history
+    const cmd = ALL_APP_COMMANDS.find(c => c.id === commandId);
+    if (cmd) {
+      logHistory(
+        'bookmark',
+        wasBookmarked ? `Bỏ ghim: ${cmd.teacherCall}` : `Ghim bài: ${cmd.teacherCall}`,
+        cmd.vietnameseTranslation
+      );
+    }
   };
 
   // Reward Golden Seeds (túi hạt giống hoa hướng dương vàng)
@@ -159,6 +180,13 @@ export default function App() {
         unlockedBadgeIds: Array.from(newBadges)
       };
     });
+    // Log history
+    const cmd = ALL_APP_COMMANDS.find(c => c.id === commandId);
+    logHistory(
+      score >= 85 ? 'mastered' : 'practice',
+      score >= 85 ? `Thành thục: ${cmd?.teacherCall || commandId}` : `Luyện tập: ${cmd?.teacherCall || commandId}`,
+      `Điểm: ${score}/100`
+    );
   };
 
   // Update teacher profile
@@ -247,6 +275,7 @@ export default function App() {
           <DashboardTab
             commands={ALL_APP_COMMANDS}
             progress={progress}
+            learningHistory={learningHistory}
             onNavigateTab={handleNavigateTab}
             onToggleBookmark={handleToggleBookmark}
           />
@@ -281,6 +310,8 @@ export default function App() {
           <SunflowerArcadeTab
             commands={ALL_APP_COMMANDS}
             onRewardSeeds={handleRewardSeeds}
+            onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
+            onAddHistory={(type, title, details) => logHistory(type, title, details)}
           />
         )}
 
@@ -294,11 +325,7 @@ export default function App() {
         )}
 
         {activeTab === 'soundboard' && (
-          <CommunityToolsTab
-            posts={posts}
-            onAddPost={handleAddPost}
-            onToggleLikePost={handleToggleLikePost}
-          />
+          <CommunityToolsTab />
         )}
       </main>
 

@@ -12,24 +12,33 @@ import {
   Eye, 
   Zap, 
   Layers,
-  Smile
+  Smile,
+  PenLine,
+  Loader2,
+  AlertCircle,
+  Key
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { CommandItem, ScenarioItem } from '../types';
 import { CLASSROOM_SCENARIOS } from '../data/scenariosData';
 import { QUIZ_ARCADE_ENCOURAGEMENTS } from '../data/sunflowerFeedbackData';
 import { speakText, stopSpeaking } from '../utils/speech';
+import { generateScenarioCommandsWithGemini } from '../utils/geminiClient';
 
 interface SunflowerArcadeTabProps {
   commands: CommandItem[];
   onRewardSeeds?: (amount: number) => void;
+  onOpenApiKeyModal?: () => void;
+  onAddHistory?: (type: 'scenario_custom', title: string, details?: string) => void;
 }
 
 type ArcadeMode = 'flashcards' | 'audio_match' | 'scenarios';
 
 export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
   commands,
-  onRewardSeeds
+  onRewardSeeds,
+  onOpenApiKeyModal,
+  onAddHistory
 }) => {
   const [activeMode, setActiveMode] = useState<ArcadeMode>('flashcards');
 
@@ -48,6 +57,17 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
   const [scenarioIndex, setScenarioIndex] = useState(0);
   const [selectedScenarioOption, setSelectedScenarioOption] = useState<string | null>(null);
   const [scenarioAnswered, setScenarioAnswered] = useState(false);
+
+  // 4. Custom Scenario Creator State
+  const [showCustomCreator, setShowCustomCreator] = useState(false);
+  const [customSituation, setCustomSituation] = useState('');
+  const [customGrade, setCustomGrade] = useState('Lớp 1 - 3');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatingStatus, setGeneratingStatus] = useState('');
+  const [generatedScenario, setGeneratedScenario] = useState<ScenarioItem | null>(null);
+  const [selectedCustomOption, setSelectedCustomOption] = useState<string | null>(null);
+  const [customAnswered, setCustomAnswered] = useState(false);
+  const [customError, setCustomError] = useState('');
 
   // Encouragement toast state
   const [encouragementToast, setEncouragementToast] = useState<{ english: string; vietnamese: string } | null>(null);
@@ -144,6 +164,47 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
     setScenarioIndex(prev => (prev + 1) % CLASSROOM_SCENARIOS.length);
   };
 
+  // Custom scenario AI generation
+  const handleGenerateCustomScenario = async () => {
+    if (!customSituation.trim() || customSituation.trim().length < 10) {
+      setCustomError('Vui lòng mô tả tình huống ít nhất 10 ký tự.');
+      return;
+    }
+    setCustomError('');
+    setIsGenerating(true);
+    setGeneratingStatus('Đang kết nối AI...');
+    setGeneratedScenario(null);
+    setSelectedCustomOption(null);
+    setCustomAnswered(false);
+
+    try {
+      const result = await generateScenarioCommandsWithGemini(
+        customSituation.trim(),
+        customGrade,
+        (status) => setGeneratingStatus(status)
+      );
+      setGeneratedScenario(result.scenario);
+      setGeneratingStatus(`Hoàn tất (${result.modelUsed})`);
+      onAddHistory?.('scenario_custom', `AI Tình Huống: ${result.scenario.title}`, customSituation.trim());
+    } catch (err: any) {
+      setCustomError(err.message || 'Lỗi không xác định.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSelectCustomOption = (optionId: string) => {
+    if (customAnswered) return;
+    setSelectedCustomOption(optionId);
+    setCustomAnswered(true);
+
+    const chosen = generatedScenario?.options.find(o => o.id === optionId);
+    if (chosen?.isBest) {
+      onRewardSeeds?.(15);
+      confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-16">
       {/* Top Banner */}
@@ -152,10 +213,10 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold">
               <Gamepad2 className="w-3.5 h-3.5 text-yellow-200" />
-              <span>Phân Khu Trò Chơi Phản Xạ • Sunflower Arcade</span>
+              <span>Phân khu trò chơi phản xạ • Sunflower Arcade</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-              Đấu Trường Phản Xạ Tiếng Anh Lớp Học
+              Đấu trường phản xạ tiếng Anh lớp học
             </h1>
             <p className="text-amber-100 text-xs sm:text-sm max-w-2xl">
               Rèn luyện phản xạ nghe hiểu, lật thẻ từ thông minh và giải quyết các tình huống sư phạm thực tế theo cách dí dỏm, không áp lực!
@@ -191,7 +252,7 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
             }`}
           >
             <Volume2 className="w-4 h-4" />
-            <span>Nối Âm Thanh</span>
+            <span>Nối âm thanh</span>
           </button>
 
           <button
@@ -427,7 +488,7 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
                 onClick={handleNextMatch}
                 className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-md flex items-center gap-1.5"
               >
-                <span>Câu Tiếp Theo</span>
+                <span>Câu tiếp theo</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -437,86 +498,302 @@ export const SunflowerArcadeTab: React.FC<SunflowerArcadeTabProps> = ({
 
       {/* MODE 3: PEDAGOGICAL SCENARIOS */}
       {activeMode === 'scenarios' && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-xs space-y-6">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <span className="text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full">
-              Tình huống {scenarioIndex + 1} / {CLASSROOM_SCENARIOS.length}: {currentScenario.title}
-            </span>
-            <span className="text-xs text-slate-500 font-semibold">{currentScenario.grade}</span>
+        <div className="space-y-6">
+          {/* Sub-mode toggle: Kho Tình Huống vs Tự Tạo */}
+          <div className="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
+            <button
+              onClick={() => setShowCustomCreator(false)}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                !showCustomCreator
+                  ? 'bg-white text-amber-900 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              <Zap className="w-3.5 h-3.5" />
+              <span>Kho tình huống có sẵn ({CLASSROOM_SCENARIOS.length})</span>
+            </button>
+            <button
+              onClick={() => setShowCustomCreator(true)}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                showCustomCreator
+                  ? 'bg-white text-amber-900 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              <PenLine className="w-3.5 h-3.5" />
+              <span>Tự tạo tình huống + AI</span>
+            </button>
           </div>
 
-          {/* Scenario Situation */}
-          <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 space-y-1">
-            <div className="text-xs font-bold uppercase tracking-wider text-amber-800">
-              Bối cảnh lớp học:
-            </div>
-            <div className="text-sm text-slate-800 font-medium leading-relaxed">
-              {currentScenario.situation}
-            </div>
-          </div>
-
-          {/* Options */}
-          <div className="space-y-3">
-            <div className="text-xs font-bold text-slate-700">
-              Theo bạn, khẩu lệnh tiếng Anh và phản xạ nào là phù hợp nhất?
-            </div>
-            <div className="grid grid-cols-1 gap-3">
-              {currentScenario.options.map((opt, idx) => {
-                const isSelected = selectedScenarioOption === opt.id;
-                let btnStyle = 'border-slate-200 hover:border-amber-400 bg-white text-slate-800';
-
-                if (scenarioAnswered) {
-                  if (opt.isBest) {
-                    btnStyle = 'border-emerald-500 bg-emerald-50 text-emerald-900 ring-2 ring-emerald-500/20';
-                  } else if (isSelected) {
-                    btnStyle = 'border-rose-500 bg-rose-50 text-rose-900';
-                  } else {
-                    btnStyle = 'border-slate-200 bg-slate-50 text-slate-400 opacity-60';
-                  }
-                }
-
-                return (
-                  <button
-                    key={opt.id}
-                    onClick={() => handleSelectScenario(opt.id)}
-                    disabled={scenarioAnswered}
-                    className={`p-4 rounded-2xl border-2 text-left transition-all text-xs flex items-start gap-3 ${btnStyle}`}
-                  >
-                    <span className="w-6 h-6 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center font-bold shrink-0">
-                      {String.fromCharCode(65 + idx)}
-                    </span>
-                    <div className="space-y-1 flex-1">
-                      <div className="font-extrabold text-sm text-slate-900">"{opt.englishText}"</div>
-                      <div className="text-slate-600">{opt.vietnameseText}</div>
-                      {scenarioAnswered && opt.rationale && (
-                        <div className="text-[11px] text-slate-500 pt-1 border-t border-slate-200/50">
-                          💡 <span className="font-semibold">Phân tích:</span> {opt.rationale}
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Pedagogical tip & Next */}
-          {scenarioAnswered && (
-            <div className="space-y-4 pt-4 border-t border-slate-100">
-              <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-                <span className="font-bold">Lời khuyên sư phạm của Mrs. Huong: </span>
-                <span>{currentScenario.pedagogicalTip}</span>
+          {/* Sub-mode A: Kho Tình Huống Có Sẵn */}
+          {!showCustomCreator && (
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-xs space-y-6">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <span className="text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full">
+                  Tình huống {scenarioIndex + 1} / {CLASSROOM_SCENARIOS.length}: {currentScenario.title}
+                </span>
+                <span className="text-xs text-slate-500 font-semibold">{currentScenario.grade}</span>
               </div>
 
-              <div className="flex justify-end">
+              {/* Scenario Situation */}
+              <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 space-y-1">
+                <div className="text-xs font-bold uppercase tracking-wider text-amber-800">
+                  Bối cảnh lớp học:
+                </div>
+                <div className="text-sm text-slate-800 font-medium leading-relaxed">
+                  {currentScenario.situation}
+                </div>
+              </div>
+
+              {/* Options */}
+              <div className="space-y-3">
+                <div className="text-xs font-bold text-slate-700">
+                  Theo bạn, khẩu lệnh tiếng Anh và phản xạ nào là phù hợp nhất?
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  {currentScenario.options.map((opt, idx) => {
+                    const isSelected = selectedScenarioOption === opt.id;
+                    let btnStyle = 'border-slate-200 hover:border-amber-400 bg-white text-slate-800';
+
+                    if (scenarioAnswered) {
+                      if (opt.isBest) {
+                        btnStyle = 'border-emerald-500 bg-emerald-50 text-emerald-900 ring-2 ring-emerald-500/20';
+                      } else if (isSelected) {
+                        btnStyle = 'border-rose-500 bg-rose-50 text-rose-900';
+                      } else {
+                        btnStyle = 'border-slate-200 bg-slate-50 text-slate-400 opacity-60';
+                      }
+                    }
+
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => handleSelectScenario(opt.id)}
+                        disabled={scenarioAnswered}
+                        className={`p-4 rounded-2xl border-2 text-left transition-all text-xs flex items-start gap-3 ${btnStyle}`}
+                      >
+                        <span className="w-6 h-6 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center font-bold shrink-0">
+                          {String.fromCharCode(65 + idx)}
+                        </span>
+                        <div className="space-y-1 flex-1">
+                          <div className="font-extrabold text-sm text-slate-900">"{opt.englishText}"</div>
+                          <div className="text-slate-600">{opt.vietnameseText}</div>
+                          {scenarioAnswered && opt.rationale && (
+                            <div className="text-[11px] text-slate-500 pt-1 border-t border-slate-200/50">
+                              💡 <span className="font-semibold">Phân tích:</span> {opt.rationale}
+                            </div>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Pedagogical tip & Next */}
+              {scenarioAnswered && (
+                <div className="space-y-4 pt-4 border-t border-slate-100">
+                  <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+                    <span className="font-bold">Lời khuyên sư phạm của Mrs. Huong: </span>
+                    <span>{currentScenario.pedagogicalTip}</span>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handleNextScenario}
+                      className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-md flex items-center gap-1.5"
+                    >
+                      <span>Tình huống tiếp theo</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Sub-mode B: Tự Tạo Tình Huống + AI Sáng Tạo Khẩu Lệnh */}
+          {showCustomCreator && (
+            <div className="space-y-6">
+              {/* Form nhập tình huống */}
+              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-xs space-y-5">
+                <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-500 text-white flex items-center justify-center">
+                    <PenLine className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-extrabold text-slate-900">Tự tạo tình huống sư phạm</h3>
+                    <p className="text-[11px] text-slate-500">Mô tả tình huống lớp học, AI sẽ sáng tạo khẩu lệnh tiếng Anh phù hợp</p>
+                  </div>
+                </div>
+
+                {/* Chọn khối lớp */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">Khối lớp</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Lớp 1 - 2', 'Lớp 3 - 4', 'Lớp 4 - 5'].map(g => (
+                      <button
+                        key={g}
+                        onClick={() => setCustomGrade(g)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                          customGrade === g
+                            ? 'bg-amber-500 text-white border-amber-600 shadow-sm'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-amber-300'
+                        }`}
+                      >
+                        {g}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Nhập tình huống */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">
+                    Mô tả tình huống lớp học <span className="text-rose-500">*</span>
+                  </label>
+                  <textarea
+                    value={customSituation}
+                    onChange={e => {
+                      setCustomSituation(e.target.value);
+                      setCustomError('');
+                    }}
+                    placeholder="Ví dụ: Khi cô giáo yêu cầu mở vở, hai học sinh ở bàn cuối vẫn tiếp tục vẽ hình lên bàn và cười đùa, làm cả lớp mất tập trung..."
+                    rows={4}
+                    className="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 placeholder:text-slate-400 resize-none"
+                  />
+                  <p className="text-[11px] text-slate-400">
+                    Mô tả càng cụ thể, AI càng tạo khẩu lệnh sát thực tế.
+                  </p>
+                </div>
+
+                {/* Error message */}
+                {customError && (
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                    <span>{customError}</span>
+                    {customError.includes('API Key') && onOpenApiKeyModal && (
+                      <button
+                        onClick={onOpenApiKeyModal}
+                        className="ml-auto shrink-0 px-2.5 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-900 font-bold text-[11px] flex items-center gap-1"
+                      >
+                        <Key className="w-3 h-3" />
+                        Cài Key
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Generate button */}
                 <button
-                  onClick={handleNextScenario}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-md flex items-center gap-1.5"
+                  onClick={handleGenerateCustomScenario}
+                  disabled={isGenerating || customSituation.trim().length < 10}
+                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-extrabold text-sm shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span>Tình Huống Tiếp Theo</span>
-                  <ChevronRight className="w-4 h-4" />
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>{generatingStatus || 'Đang xử lý...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>AI sáng tạo khẩu lệnh tiếng Anh</span>
+                    </>
+                  )}
                 </button>
               </div>
+
+              {/* Kết quả AI */}
+              {generatedScenario && (
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-amber-300 shadow-md space-y-5">
+                  <div className="flex items-center justify-between pb-3 border-b border-amber-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">✨</span>
+                      <h3 className="text-sm font-extrabold text-slate-900">{generatedScenario.title}</h3>
+                    </div>
+                    <span className="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+                      {generatedScenario.grade}
+                    </span>
+                  </div>
+
+                  {/* Bối cảnh */}
+                  <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 space-y-1">
+                    <div className="text-xs font-bold uppercase tracking-wider text-amber-800">Bối cảnh lớp học:</div>
+                    <div className="text-sm text-slate-800 font-medium leading-relaxed">
+                      {generatedScenario.situation}
+                    </div>
+                  </div>
+
+                  {/* 3 lựa chọn */}
+                  <div className="space-y-3">
+                    <div className="text-xs font-bold text-slate-700">
+                      Chọn khẩu lệnh phù hợp nhất:
+                    </div>
+                    <div className="grid grid-cols-1 gap-3">
+                      {generatedScenario.options.map((opt, idx) => {
+                        const isSelected = selectedCustomOption === opt.id;
+                        let btnStyle = 'border-slate-200 hover:border-amber-400 bg-white text-slate-800';
+
+                        if (customAnswered) {
+                          if (opt.isBest) {
+                            btnStyle = 'border-emerald-500 bg-emerald-50 text-emerald-900 ring-2 ring-emerald-500/20';
+                          } else if (isSelected) {
+                            btnStyle = 'border-rose-500 bg-rose-50 text-rose-900';
+                          } else {
+                            btnStyle = 'border-slate-200 bg-slate-50 text-slate-400 opacity-60';
+                          }
+                        }
+
+                        return (
+                          <button
+                            key={opt.id}
+                            onClick={() => handleSelectCustomOption(opt.id)}
+                            disabled={customAnswered}
+                            className={`p-4 rounded-2xl border-2 text-left transition-all text-xs flex items-start gap-3 ${btnStyle}`}
+                          >
+                            <span className="w-6 h-6 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center font-bold shrink-0">
+                              {String.fromCharCode(65 + idx)}
+                            </span>
+                            <div className="space-y-1 flex-1">
+                              <div className="font-extrabold text-sm text-slate-900">"{opt.englishText}"</div>
+                              <div className="text-slate-600">{opt.vietnameseText}</div>
+                              {customAnswered && opt.rationale && (
+                                <div className="text-[11px] text-slate-500 pt-1 border-t border-slate-200/50">
+                                  💡 <span className="font-semibold">Phân tích:</span> {opt.rationale}
+                                </div>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Lời khuyên sư phạm */}
+                  {customAnswered && generatedScenario.pedagogicalTip && (
+                    <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+                      <span className="font-bold">Lời khuyên sư phạm của Mrs. Huong: </span>
+                      <span>{generatedScenario.pedagogicalTip}</span>
+                    </div>
+                  )}
+
+                  {/* Tạo lại */}
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={() => {
+                        setGeneratedScenario(null);
+                        setSelectedCustomOption(null);
+                        setCustomAnswered(false);
+                        setCustomSituation('');
+                      }}
+                      className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors"
+                    >
+                      Tạo tình huống mới
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

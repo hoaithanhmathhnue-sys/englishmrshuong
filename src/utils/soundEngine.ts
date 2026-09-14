@@ -78,21 +78,22 @@ export function playMagicWand(): void {
   });
 }
 
-/** 3. Applause: Synthesized clapping bursts using noise buffers */
+/** 3. Applause: Synthesized clapping bursts using noise buffers (optimized) */
 export function playApplause(): void {
   const ctx = getAudioContext();
   const now = ctx.currentTime;
-  const totalClaps = 28;
+  const totalClaps = 16; // Reduced from 28 for faster execution
+  const bufferSize = Math.floor(ctx.sampleRate * 0.08);
+
+  // Create ONE noise buffer and reuse it for all claps
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let j = 0; j < bufferSize; j++) {
+    data[j] = (Math.random() * 2 - 1) * Math.exp(-j / (ctx.sampleRate * 0.015));
+  }
 
   for (let i = 0; i < totalClaps; i++) {
-    const clapTime = now + (i * 0.05) + (Math.random() * 0.04);
-    const bufferSize = ctx.sampleRate * 0.08;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-
-    for (let j = 0; j < bufferSize; j++) {
-      data[j] = (Math.random() * 2 - 1) * Math.exp(-j / (ctx.sampleRate * 0.015));
-    }
+    const clapTime = now + (i * 0.06) + (Math.random() * 0.03);
 
     const noiseSource = ctx.createBufferSource();
     noiseSource.buffer = buffer;
@@ -103,7 +104,7 @@ export function playApplause(): void {
     filter.Q.setValueAtTime(1.8, clapTime);
 
     const gain = ctx.createGain();
-    const volume = 0.18 + Math.random() * 0.12;
+    const volume = 0.2 + Math.random() * 0.1;
     gain.gain.setValueAtTime(volume, clapTime);
     gain.gain.exponentialRampToValueAtTime(0.001, clapTime + 0.08);
 
@@ -270,19 +271,20 @@ export function playGentleBuzzer(): void {
   });
 }
 
-/** 8. 5-Second Countdown: 5 metronome wood clicks with a celebratory finishing bell */
+/** 8. N-Second Countdown: metronome wood clicks with a celebratory finishing bell */
 let activeCountdownTimer: number | null = null;
 
 export function playCountdownTick(
   onTick?: (count: number) => void,
-  onComplete?: () => void
+  onComplete?: () => void,
+  seconds: number = 5
 ): () => void {
   if (activeCountdownTimer) {
     clearInterval(activeCountdownTimer);
     activeCountdownTimer = null;
   }
 
-  let count = 5;
+  let count = Math.max(1, Math.min(60, Math.round(seconds)));
   const ctx = getAudioContext();
 
   const playSingleTick = (isFinal: boolean) => {

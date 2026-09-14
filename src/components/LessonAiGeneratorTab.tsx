@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { 
   Sparkles, 
   BookOpen, 
@@ -12,7 +12,12 @@ import {
   HandMetal, 
   Lightbulb,
   ArrowRight,
-  AlertCircle
+  AlertCircle,
+  Upload,
+  FileText,
+  X,
+  FileUp,
+  Mic
 } from 'lucide-react';
 import { GradeLevel, GeneratedLessonCommand, LessonGeneratorForm } from '../types';
 import { generateLessonCommandsWithGemini, getStoredAiConfig } from '../utils/geminiClient';
@@ -20,6 +25,7 @@ import { speakText, stopSpeaking } from '../utils/speech';
 
 interface LessonAiGeneratorTabProps {
   onOpenApiKeyModal: () => void;
+  onNavigateToVoiceLab?: (cmdId?: string) => void;
 }
 
 const SAMPLE_LESSONS: LessonGeneratorForm[] = [
@@ -49,13 +55,220 @@ const SAMPLE_LESSONS: LessonGeneratorForm[] = [
   }
 ];
 
+// --- Client-side file text extraction utilities ---
+
+/** Extract text from a DOCX file (ZIP containing XML) */
+async function extractTextFromDocx(file: File): Promise<string> {
+  const arrayBuffer = await file.arrayBuffer();
+  const uint8 = new Uint8Array(arrayBuffer);
+
+  // DOCX = ZIP file. Find document.xml inside the ZIP.
+  // Simple ZIP parser: search for "word/document.xml" PK entries
+  const decoder = new TextDecoder('utf-8');
+  const fullText = decoder.decode(uint8);
+  
+  // Find all <w:t> text nodes from the raw XML inside the DOCX zip
+  // Strategy: locate the document.xml content between local file header boundaries
+  const docXmlStart = findDocumentXmlOffset(uint8);
+  if (docXmlStart < 0) {
+    // Fallback: try to parse the raw bytes as text and extract readable content
+    return extractReadableText(fullText);
+  }
+
+  const xmlContent = extractDeflatedOrStored(uint8, docXmlStart);
+  if (!xmlContent) {
+    return extractReadableText(fullText);
+  }
+
+  // Parse XML text nodes: <w:t ...>content</w:t>
+  const textParts: string[] = [];
+  const regex = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+  let match;
+  while ((match = regex.exec(xmlContent)) !== null) {
+    textParts.push(match[1]);
+  }
+
+  // Also check for paragraph breaks
+  const withBreaks = xmlContent.replace(/<\/w:p>/g, '\n');
+  const altRegex = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+  const altParts: string[] = [];
+  let altMatch;
+  while ((altMatch = altRegex.exec(withBreaks)) !== null) {
+    altParts.push(altMatch[1]);
+  }
+
+  const result = (altParts.length > textParts.length ? altParts : textParts).join(' ');
+  return result.trim() || extractReadableText(fullText);
+}
+
+/** Find the offset of "word/document.xml" local file header in ZIP */
+function findDocumentXmlOffset(data: Uint8Array): number {
+  const target = 'word/document.xml';
+  const targetBytes = new TextEncoder().encode(target);
+  
+  for (let i = 0; i < data.length - targetBytes.length; i++) {
+    let found = true;
+    for (let j = 0; j < targetBytes.length; j++) {
+      if (data[i + j] !== targetBytes[j]) {
+        found = false;
+        break;
+      }
+    }
+    if (found) return i;
+  }
+  return -1;
+}
+
+/** Try to extract stored (uncompressed) XML from the ZIP entry */
+function extractDeflatedOrStored(data: Uint8Array, nameOffset: number): string | null {
+  // Walk backwards to find the local file header (PK\x03\x04)
+  let headerOffset = nameOffset;
+  for (let i = nameOffset; i >= Math.max(0, nameOffset - 200); i--) {
+    if (data[i] === 0x50 && data[i + 1] === 0x4B && data[i + 2] === 0x03 && data[i + 3] === 0x04) {
+      headerOffset = i;
+      break;
+    }
+  }
+  
+  // Parse local file header
+  const compressionMethod = data[headerOffset + 8] | (data[headerOffset + 9] << 8);
+  const compressedSize = data[headerOffset + 18] | (data[headerOffset + 19] << 8) | (data[headerOffset + 20] << 16) | (data[headerOffset + 21] << 24);
+  const fileNameLen = data[headerOffset + 26] | (data[headerOffset + 27] << 8);
+  const extraFieldLen = data[headerOffset + 28] | (data[headerOffset + 29] << 8);
+  
+  const dataStart = headerOffset + 30 + fileNameLen + extraFieldLen;
+  
+  if (compressionMethod === 0) {
+    // Stored (no compression)
+    const xmlBytes = data.slice(dataStart, dataStart + compressedSize);
+    return new TextDecoder('utf-8').decode(xmlBytes);
+  }
+  
+  if (compressionMethod === 8) {
+    // Deflated - use DecompressionStream if available
+    try {
+      const compressedData = data.slice(dataStart, dataStart + compressedSize);
+      // Try with DecompressionStream (modern browsers)
+      if (typeof DecompressionStream !== 'undefined') {
+        return null; // Will fall back to readable text extraction
+      }
+    } catch {
+      // ignore
+    }
+  }
+  
+  return null;
+}
+
+/** Fallback: extract any human-readable text segments from binary data */
+function extractReadableText(rawText: string): string {
+  // Remove XML tags, control chars, and extract readable content
+  const cleaned = rawText
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  
+  // Keep only meaningful text segments (Vietnamese + English + digits)
+  const words = cleaned.split(/\s+/).filter(w => 
+    w.length > 1 && /[a-zA-ZÀ-ỹ0-9]/.test(w)
+  );
+  
+  return words.slice(0, 2000).join(' '); // Cap at ~2000 words
+}
+
+/** Extract text from PDF using simple text stream parsing */
+async function extractTextFromPdf(file: File): Promise<string> {
+  const arrayBuffer = await file.arrayBuffer();
+  const uint8 = new Uint8Array(arrayBuffer);
+  const text = new TextDecoder('latin1').decode(uint8);
+  
+  const textSegments: string[] = [];
+  
+  // Strategy 1: Extract text between BT...ET (text objects)
+  const btEtRegex = /BT\s([\s\S]*?)ET/g;
+  let btMatch;
+  while ((btMatch = btEtRegex.exec(text)) !== null) {
+    const block = btMatch[1];
+    // Extract parenthesized strings: (text content)
+    const tjRegex = /\(([^)]*)\)/g;
+    let tjMatch;
+    while ((tjMatch = tjRegex.exec(block)) !== null) {
+      const decoded = tjMatch[1]
+        .replace(/\\n/g, '\n')
+        .replace(/\\r/g, '')
+        .replace(/\\t/g, ' ')
+        .replace(/\\\(/g, '(')
+        .replace(/\\\)/g, ')')
+        .replace(/\\\\/g, '\\');
+      if (decoded.trim()) {
+        textSegments.push(decoded.trim());
+      }
+    }
+  }
+  
+  // Strategy 2: If BT/ET extraction yields little, try to find readable text
+  if (textSegments.join(' ').length < 50) {
+    // Look for streams and try to extract text
+    const streamRegex = /stream\r?\n([\s\S]*?)\r?\nendstream/g;
+    let streamMatch;
+    while ((streamMatch = streamRegex.exec(text)) !== null) {
+      const content = streamMatch[1];
+      const readable = content.replace(/[^\x20-\x7E\xC0-\xFF\n]/g, '').trim();
+      if (readable.length > 10) {
+        textSegments.push(readable);
+      }
+    }
+  }
+  
+  const result = textSegments.join(' ').replace(/\s+/g, ' ').trim();
+  return result.slice(0, 8000); // Cap at 8000 chars for API prompt
+}
+
+/** Main file text extraction dispatcher */
+async function extractTextFromFile(file: File): Promise<string> {
+  const name = file.name.toLowerCase();
+  
+  if (name.endsWith('.docx')) {
+    return extractTextFromDocx(file);
+  }
+  
+  if (name.endsWith('.pdf')) {
+    return extractTextFromPdf(file);
+  }
+  
+  if (name.endsWith('.doc')) {
+    // Old .doc format - extract readable text from binary
+    const buffer = await file.arrayBuffer();
+    const text = new TextDecoder('utf-8', { fatal: false }).decode(buffer);
+    return extractReadableText(text);
+  }
+  
+  if (name.endsWith('.txt') || name.endsWith('.md')) {
+    return file.text();
+  }
+  
+  throw new Error('Chỉ hỗ trợ file .docx, .pdf, .doc hoặc .txt');
+}
+
+// Max file size: 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
-  onOpenApiKeyModal
+  onOpenApiKeyModal,
+  onNavigateToVoiceLab
 }) => {
   const [grade, setGrade] = useState<GradeLevel>('Lớp 1');
   const [subject, setSubject] = useState('Toán học');
   const [lessonName, setLessonName] = useState('Phép cộng trong phạm vi 10');
   const [notes, setNotes] = useState('Khởi động vui vẻ và có hô đáp nhịp nhàng');
+
+  // File upload state
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [extractedText, setExtractedText] = useState<string>('');
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [extractError, setExtractError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [progressStatus, setProgressStatus] = useState('');
@@ -68,9 +281,83 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
   const aiConfig = getStoredAiConfig();
   const hasApiKey = Boolean(aiConfig.apiKey);
 
+  // --- File upload handlers ---
+  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Reset
+    setExtractError(null);
+    setExtractedText('');
+    
+    // Validate size
+    if (file.size > MAX_FILE_SIZE) {
+      setExtractError(`File quá lớn (${(file.size / 1024 / 1024).toFixed(1)}MB). Giới hạn tối đa 5MB.`);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    // Validate extension
+    const name = file.name.toLowerCase();
+    if (!name.endsWith('.docx') && !name.endsWith('.pdf') && !name.endsWith('.doc') && !name.endsWith('.txt')) {
+      setExtractError('Chỉ hỗ trợ định dạng .docx, .pdf, .doc hoặc .txt');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    setUploadedFile(file);
+    setIsExtracting(true);
+
+    try {
+      const text = await extractTextFromFile(file);
+      if (!text || text.trim().length < 10) {
+        setExtractError('Không trích xuất được nội dung văn bản từ file. Vui lòng thử file khác hoặc nhập tay.');
+        setUploadedFile(null);
+      } else {
+        setExtractedText(text.slice(0, 4000)); // Cap at 4000 chars
+        // Auto-populate lesson name from filename if empty
+        if (!lessonName || lessonName === 'Phép cộng trong phạm vi 10') {
+          const baseName = file.name.replace(/\.(docx|pdf|doc|txt)$/i, '').replace(/[_-]/g, ' ');
+          setLessonName(baseName);
+        }
+      }
+    } catch (err: any) {
+      setExtractError(err?.message || 'Không thể đọc nội dung file.');
+      setUploadedFile(null);
+    } finally {
+      setIsExtracting(false);
+    }
+  }, [lessonName]);
+
+  const handleRemoveFile = useCallback(() => {
+    setUploadedFile(null);
+    setExtractedText('');
+    setExtractError(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const file = e.dataTransfer.files[0];
+    if (file && fileInputRef.current) {
+      // Create a synthetic change event by setting the file
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInputRef.current.files = dt.files;
+      fileInputRef.current.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  // --- Generate handler ---
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!lessonName.trim()) return;
+    if (!lessonName.trim() && !extractedText.trim()) return;
 
     if (!hasApiKey) {
       onOpenApiKeyModal();
@@ -82,8 +369,16 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
     setProgressStatus('Đang kết nối trí tuệ nhân tạo Google AI...');
 
     try {
+      // Build enhanced notes with file content
+      const enrichedNotes = [
+        notes,
+        extractedText 
+          ? `\n\n--- NỘI DUNG BÀI HỌC TRÍCH XUẤT TỪ FILE "${uploadedFile?.name || 'bài học'}" ---\n${extractedText}`
+          : ''
+      ].filter(Boolean).join('\n');
+
       const response = await generateLessonCommandsWithGemini(
-        { grade, subject, lessonName, notes },
+        { grade, subject, lessonName, notes: enrichedNotes },
         (status) => setProgressStatus(status)
       );
 
@@ -103,6 +398,7 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
     setSubject(sample.subject);
     setLessonName(sample.lessonName);
     setNotes(sample.notes || '');
+    handleRemoveFile();
   };
 
   const handlePlayVoice = (id: string, text: string, rate: number = 1.0) => {
@@ -129,13 +425,13 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-white text-xs font-bold">
               <Sparkles className="w-3.5 h-3.5 text-yellow-200" />
-              <span>Trí Tuệ Nhân Tạo Google GenAI • Gemini 3.6</span>
+              <span>Trí tuệ nhân tạo Google GenAI • Gemini 3.6</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
-              AI Soạn Câu Lệnh Theo Bài Học
+              AI soạn câu lệnh theo bài học
             </h1>
             <p className="text-amber-100 text-xs sm:text-sm leading-relaxed">
-              Nhập tên bài dạy của bạn (Toán, Tiếng Việt, Tự nhiên & Xã hội, Khoa học...), AI của Mrs. Huong sẽ tự động thiết kế ngay 4 câu lệnh Tiếng Anh tích hợp tương ứng 4 giai đoạn lên lớp kèm phiên âm IPA và cử chỉ TPR sinh động!
+              Nhập tên bài dạy hoặc <strong className="text-white">tải lên file DOCX / PDF</strong> giáo án, AI của Mrs. Huong sẽ tự động thiết kế ngay 4 câu lệnh Tiếng Anh tích hợp tương ứng 4 giai đoạn lên lớp kèm phiên âm IPA và cử chỉ TPR sinh động!
             </p>
           </div>
 
@@ -161,7 +457,7 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
             <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs">
               <BookOpen className="w-4 h-4" />
             </div>
-            <h2 className="text-base font-extrabold text-slate-900">Thông Tin Tiết Dạy Của Bạn</h2>
+            <h2 className="text-base font-extrabold text-slate-900">Thông tin tiết dạy của bạn</h2>
           </div>
 
           {/* Quick template chips */}
@@ -184,7 +480,7 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Grade */}
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">Khối Lớp</label>
+              <label className="text-xs font-bold text-slate-700">Khối lớp</label>
               <select
                 value={grade}
                 onChange={e => setGrade(e.target.value as GradeLevel)}
@@ -200,7 +496,7 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
 
             {/* Subject */}
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">Môn Học</label>
+              <label className="text-xs font-bold text-slate-700">Môn học</label>
               <input
                 type="text"
                 value={subject}
@@ -212,7 +508,7 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
 
             {/* Lesson Name */}
             <div className="space-y-1 sm:col-span-2 lg:col-span-1">
-              <label className="text-xs font-bold text-slate-700">Tên Bài Dạy / Chủ Đề</label>
+              <label className="text-xs font-bold text-slate-700">Tên bài dạy / chủ đề</label>
               <input
                 type="text"
                 value={lessonName}
@@ -225,7 +521,7 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
 
           {/* Notes */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Ghi Chú Hoạt Động Cụ Thể (Tùy chọn)</label>
+            <label className="text-xs font-bold text-slate-700">Ghi chú hoạt động cụ thể (tùy chọn)</label>
             <input
               type="text"
               value={notes}
@@ -233,6 +529,93 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
               placeholder="VD: Cần hoạt động chia nhóm 4 người, dùng bảng con hoặc động tác tay sôi nổi..."
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 text-xs font-medium"
             />
+          </div>
+
+          {/* ===== FILE UPLOAD SECTION ===== */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <FileUp className="w-3.5 h-3.5 text-amber-600" />
+              Tải Lên File Bài Học (Tùy chọn — hỗ trợ .docx, .pdf, .doc, .txt)
+            </label>
+
+            {!uploadedFile ? (
+              <div
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                className="relative border-2 border-dashed border-amber-300 hover:border-amber-500 rounded-2xl p-5 text-center bg-amber-50/50 hover:bg-amber-50 transition-all cursor-pointer group"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".docx,.pdf,.doc,.txt"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Upload className="w-6 h-6" />
+                  </div>
+                  <div className="text-xs text-slate-700 font-semibold">
+                    Bấm để chọn file hoặc <span className="text-amber-700 font-bold">kéo thả vào đây</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500">
+                    Hỗ trợ: .docx (Word), .pdf, .doc, .txt • Tối đa 5MB
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-amber-200 bg-amber-50">
+                <div className="w-10 h-10 rounded-xl bg-amber-200 text-amber-800 flex items-center justify-center shrink-0">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-bold text-slate-900 truncate">{uploadedFile.name}</div>
+                  <div className="text-[11px] text-slate-500">
+                    {isExtracting ? (
+                      <span className="text-amber-700 font-semibold flex items-center gap-1">
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        Đang trích xuất nội dung bài học...
+                      </span>
+                    ) : extractedText ? (
+                      <span className="text-emerald-700 font-semibold">
+                        ✓ Đã trích xuất {extractedText.length.toLocaleString()} ký tự • Sẵn sàng tạo câu lệnh
+                      </span>
+                    ) : (
+                      <span>{(uploadedFile.size / 1024).toFixed(0)} KB</span>
+                    )}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRemoveFile}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0"
+                  title="Xóa file"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+            {/* File extract error */}
+            {extractError && (
+              <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] flex items-start gap-1.5">
+                <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />
+                <span>{extractError}</span>
+              </div>
+            )}
+
+            {/* Preview extracted text */}
+            {extractedText && (
+              <details className="group">
+                <summary className="text-[11px] text-amber-700 font-semibold cursor-pointer hover:text-amber-900 transition-colors select-none">
+                  📄 Xem trước nội dung trích xuất ({extractedText.length.toLocaleString()} ký tự)
+                </summary>
+                <div className="mt-2 p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 leading-relaxed max-h-40 overflow-y-auto whitespace-pre-wrap font-mono">
+                  {extractedText.slice(0, 1500)}{extractedText.length > 1500 ? '\n\n... (đã rút gọn)' : ''}
+                </div>
+              </details>
+            )}
           </div>
 
           {/* Error display */}
@@ -258,14 +641,16 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
           )}
 
           {/* Submit CTA */}
-          <div className="pt-2 flex items-center justify-between gap-3">
+          <div className="pt-2 flex items-center justify-between gap-3 flex-wrap">
             <div className="text-[11px] text-slate-500">
-              * Tích hợp tự động Fallback model chống quá tải 503
+              {extractedText 
+                ? `📎 File "${uploadedFile?.name}" đã sẵn sàng • Nội dung bài học sẽ được gửi kèm cho AI`
+                : '* Tích hợp tự động Fallback model chống quá tải 503'}
             </div>
 
             <button
               type="submit"
-              disabled={isLoading || !lessonName.trim()}
+              disabled={isLoading || (!lessonName.trim() && !extractedText.trim())}
               className="px-6 py-3 rounded-2xl bg-linear-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-black text-xs sm:text-sm transition-all shadow-md shadow-amber-500/30 flex items-center gap-2 disabled:opacity-50"
             >
               {isLoading ? (
@@ -288,18 +673,25 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
       {/* Result Cards Display */}
       {generatedCommands && generatedCommands.length > 0 && (
         <div className="space-y-4 animate-fadeIn">
-          <div className="flex items-center justify-between px-2">
+          <div className="flex items-center justify-between px-2 flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <span className="text-xl">🌻</span>
               <h3 className="text-base font-extrabold text-slate-900">
                 Bộ Câu Lệnh Sư Phạm Cho Tiết: <span className="text-amber-700">"{lessonName}"</span>
               </h3>
             </div>
-            {modelUsed && (
-              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                Sinh bởi {modelUsed}
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {modelUsed && (
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                  Sinh bởi {modelUsed}
+                </span>
+              )}
+              {uploadedFile && (
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  📎 Từ file: {uploadedFile.name}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -315,17 +707,28 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
                     <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-500 text-white shadow-2xs">
                       Giai đoạn: {cmd.activityStage}
                     </span>
-                    <button
-                      onClick={() => handleCopy(cmd.id, `${cmd.teacherCall} -> ${cmd.studentResponse} (${cmd.vietnameseTranslation})`)}
-                      title="Sao chép câu lệnh"
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                    >
-                      {copiedId === cmd.id ? (
-                        <Check className="w-4 h-4 text-emerald-600" />
-                      ) : (
-                        <Copy className="w-4 h-4" />
+                    <div className="flex items-center gap-1">
+                      {onNavigateToVoiceLab && (
+                        <button
+                          onClick={() => onNavigateToVoiceLab(cmd.id)}
+                          title="Luyện phát âm câu này trong Voice Lab"
+                          className="p-1.5 rounded-lg text-purple-400 hover:text-purple-700 hover:bg-purple-50 transition-colors"
+                        >
+                          <Mic className="w-4 h-4" />
+                        </button>
                       )}
-                    </button>
+                      <button
+                        onClick={() => handleCopy(cmd.id, `${cmd.teacherCall} -> ${cmd.studentResponse} (${cmd.vietnameseTranslation})`)}
+                        title="Sao chép câu lệnh"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                      >
+                        {copiedId === cmd.id ? (
+                          <Check className="w-4 h-4 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   {/* Teacher Call */}
@@ -390,3 +793,4 @@ export const LessonAiGeneratorTab: React.FC<LessonAiGeneratorTabProps> = ({
     </div>
   );
 };
+

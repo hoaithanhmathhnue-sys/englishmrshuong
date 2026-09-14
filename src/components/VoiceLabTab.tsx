@@ -282,7 +282,7 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
           <span>Interactive Pedagogical Voice Lab • Mrs. Huong AI</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-          Phòng Luyện Tương Tác Voice AI Sư Phạm
+          Phòng luyện tương tác Voice AI sư phạm
         </h1>
         <p className="text-slate-500 text-xs sm:text-sm max-w-3xl leading-relaxed">
           Hệ thống nhận diện giọng nói Web Speech AI so khớp thời gian thực, đánh giá độ chuẩn xác và phản hồi bằng lời động viên ấm áp của Mrs. Huong AI, giúp thầy cô tự tin làm chủ 4 sắc thái biểu cảm sư phạm tiểu học.
@@ -306,7 +306,7 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
               <Mic className="w-5 h-5 text-blue-600" />
-              <span>1. Luyện Giọng & 4 Sắc Thái Biểu Cảm Sư Phạm</span>
+              <span>1. Luyện giọng & 4 sắc thái biểu cảm sư phạm</span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Chọn câu khẩu lệnh và lựa chọn âm hưởng giọng nói phù hợp với hoàn cảnh lớp học
@@ -444,7 +444,7 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
                   className="px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-blue-600/25 transition-all hover:scale-102 active:scale-98 w-full sm:w-auto"
                 >
                   <Mic className="w-5 h-5 text-amber-300" />
-                  <span>Bấm Micro Để Thu Âm</span>
+                  <span>Bấm micro để thu âm</span>
                 </button>
               ) : (
                 <button
@@ -453,7 +453,7 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
                   className="px-6 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-rose-600/30 transition-all animate-pulse w-full sm:w-auto"
                 >
                   <MicOff className="w-5 h-5 text-white" />
-                  <span>Đang Thu Âm... (Bấm Để Dừng)</span>
+                  <span>Đang thu âm... (bấm để dừng)</span>
                 </button>
               )}
             </div>
@@ -592,7 +592,7 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
               <HelpCircle className="w-5 h-5 text-amber-600" />
-              <span>2. Tình Huống Sư Phạm Thực Tế (Classroom Scenario Quiz)</span>
+              <span>2. Tình huống sư phạm thực tế (Classroom Scenario Quiz)</span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Rèn luyện tư duy phản xạ tiếng Anh tích cực trong các tình huống thực tế tại lớp học tiểu học

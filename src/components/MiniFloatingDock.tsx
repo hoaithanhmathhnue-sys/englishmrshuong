@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { 
   Bell, 
   Sparkles, 
@@ -11,7 +11,8 @@ import {
   VolumeX, 
   Zap, 
   ShieldAlert,
-  Flame
+  Flame,
+  Mic
 } from 'lucide-react';
 import { 
   playAttentionChime, 
@@ -21,29 +22,38 @@ import {
 } from '../utils/soundEngine';
 import { speakText, stopSpeaking } from '../utils/speech';
 
-export const MiniFloatingDock: React.FC = () => {
+interface MiniFloatingDockProps {
+  onNavigateTab?: (tab: string) => void;
+}
+
+export const MiniFloatingDock: React.FC<MiniFloatingDockProps> = ({ onNavigateTab }) => {
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const [countdownNum, setCountdownNum] = useState<number | null>(null);
+  const [countdownSec, setCountdownSec] = useState(5);
   const cancelCountdownRef = useRef<(() => void) | null>(null);
 
-  // Trigger sound effect
-  const triggerAudio = (id: string, fn: () => void) => {
+  // Trigger sound effect — fire-and-forget, instant visual feedback
+  const triggerAudio = useCallback((id: string, fn: () => void) => {
     setActiveButton(id);
     fn();
-    setTimeout(() => setActiveButton(null), 1000);
-  };
+    setTimeout(() => setActiveButton(null), 800);
+  }, []);
 
-  // Trigger quick command speech
-  const triggerSpeech = (id: string, text: string) => {
-    stopSpeaking();
+  // Trigger quick command speech — instant visual, async speech
+  const triggerSpeech = useCallback((id: string, text: string) => {
     setActiveButton(id);
-    speakText(text, {
-      rate: 1.0,
-      tone: 'energetic',
-      onEnd: () => setActiveButton(null)
+    stopSpeaking();
+    // Defer speech to next microtask so UI updates instantly
+    requestAnimationFrame(() => {
+      speakText(text, {
+        rate: 1.0,
+        tone: 'energetic',
+        onEnd: () => setActiveButton(null)
+      });
     });
-  };
+  }, []);
 
   // Trigger 5s Countdown
   const triggerCountdown = () => {
@@ -62,7 +72,8 @@ export const MiniFloatingDock: React.FC = () => {
         setCountdownNum(null);
         setActiveButton(null);
         cancelCountdownRef.current = null;
-      }
+      },
+      countdownSec
     );
   };
 
@@ -70,7 +81,7 @@ export const MiniFloatingDock: React.FC = () => {
     <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2 no-print select-none">
       {/* Expanded Dock Panel */}
       {isExpanded && (
-        <div className="bg-slate-900/95 backdrop-blur-md border-2 border-amber-400/80 rounded-3xl p-3 shadow-2xl shadow-slate-950/40 text-white w-72 sm:w-80 animate-slideUp">
+        <div className="bg-slate-900/95 border-2 border-amber-400/80 rounded-3xl p-3 shadow-2xl shadow-slate-950/40 text-white w-72 sm:w-80 animate-slideUp" style={{ willChange: 'transform, opacity' }}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-700/80">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
@@ -101,7 +112,7 @@ export const MiniFloatingDock: React.FC = () => {
                 <Bell className="w-4 h-4" />
               </div>
               <div>
-                <div className="leading-tight">Chuông Lớp</div>
+                <div className="leading-tight">Chuông lớp</div>
                 <div className="text-[10px] text-amber-200/80 font-normal">Ổn định trật tự</div>
               </div>
             </button>
@@ -119,7 +130,7 @@ export const MiniFloatingDock: React.FC = () => {
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <div className="leading-tight">Khen Thưởng</div>
+                <div className="leading-tight">Khen thưởng</div>
                 <div className="text-[10px] text-emerald-200/80 font-normal">Tặng sao vàng</div>
               </div>
             </button>
@@ -137,28 +148,68 @@ export const MiniFloatingDock: React.FC = () => {
                 <Trophy className="w-4 h-4" />
               </div>
               <div>
-                <div className="leading-tight">Vỗ Tay</div>
+                <div className="leading-tight">Vỗ tay</div>
                 <div className="text-[10px] text-yellow-200/80 font-normal">Tuyên dương lớp</div>
               </div>
             </button>
 
-            {/* 4. 5s Countdown */}
-            <button
-              onClick={triggerCountdown}
-              className={`p-3 rounded-2xl flex items-center gap-2.5 transition-all text-left font-bold text-xs ${
-                activeButton === 'countdown'
-                  ? 'bg-rose-500 text-white scale-95 ring-2 ring-white animate-pulse'
-                  : 'bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30'
-              }`}
-            >
-              <div className="w-8 h-8 rounded-xl bg-rose-500 text-white flex items-center justify-center shrink-0 text-sm font-black">
-                {countdownNum !== null ? countdownNum : '5s'}
+            {/* 4. Customizable Countdown */}
+            <div className={`p-3 rounded-2xl transition-all text-left font-bold text-xs col-span-2 ${
+              activeButton === 'countdown'
+                ? 'bg-rose-500 text-white scale-[0.98] ring-2 ring-white'
+                : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+            }`}>
+              <div className="flex items-center gap-2.5 mb-2">
+                <button
+                  onClick={triggerCountdown}
+                  className="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center shrink-0 text-sm font-black hover:bg-rose-600 active:scale-90 transition-all"
+                >
+                  {countdownNum !== null ? countdownNum : `${countdownSec}s`}
+                </button>
+                <div className="flex-1">
+                  <div className="leading-tight">Đếm ngược</div>
+                  <div className="text-[10px] text-rose-200/80 font-normal">
+                    {countdownNum !== null ? 'Bấm để hủy' : 'Bấm số để bắt đầu'}
+                  </div>
+                </div>
               </div>
-              <div>
-                <div className="leading-tight">Đếm Ngược 5s</div>
-                <div className="text-[10px] text-rose-200/80 font-normal">Thu bài / Dừng tay</div>
-              </div>
-            </button>
+
+              {/* Seconds selector — only show when NOT counting */}
+              {countdownNum === null && (
+                <div className="flex items-center gap-1.5">
+                  {/* Minus button */}
+                  <button
+                    onClick={() => setCountdownSec(s => Math.max(1, s - 1))}
+                    className="w-7 h-7 rounded-lg bg-rose-600/40 hover:bg-rose-600/60 text-white flex items-center justify-center text-sm font-bold transition-colors active:scale-90"
+                  >
+                    −
+                  </button>
+
+                  {/* Preset chips */}
+                  {[3, 5, 10, 15, 30].map(s => (
+                    <button
+                      key={s}
+                      onClick={() => setCountdownSec(s)}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all active:scale-90 ${
+                        countdownSec === s
+                          ? 'bg-rose-500 text-white ring-1 ring-white/60'
+                          : 'bg-rose-600/30 text-rose-200 hover:bg-rose-600/50'
+                      }`}
+                    >
+                      {s}s
+                    </button>
+                  ))}
+
+                  {/* Plus button */}
+                  <button
+                    onClick={() => setCountdownSec(s => Math.min(60, s + 1))}
+                    className="w-7 h-7 rounded-lg bg-rose-600/40 hover:bg-rose-600/60 text-white flex items-center justify-center text-sm font-bold transition-colors active:scale-90"
+                  >
+                    +
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* 5. Quick Call 1: Eyes on me */}
             <button
@@ -177,9 +228,26 @@ export const MiniFloatingDock: React.FC = () => {
                 <div className="text-[10px] text-blue-300/80 font-normal">Tập trung mắt nhìn lên bảng</div>
               </div>
             </button>
+
+            {/* 6. Quick Voice Lab Shortcut */}
+            {onNavigateTab && (
+              <button
+                onClick={() => { onNavigateTab('voicelab'); setIsExpanded(false); }}
+                className="p-3 rounded-2xl flex items-center gap-2.5 transition-all text-left font-bold text-xs col-span-2 bg-purple-500/20 text-purple-200 border border-purple-500/40 hover:bg-purple-500/30"
+              >
+                <div className="w-8 h-8 rounded-xl bg-purple-500 text-white flex items-center justify-center shrink-0">
+                  <Mic className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="leading-tight text-white font-extrabold">Mở Voice Lab • Luyện phát âm</div>
+                  <div className="text-[10px] text-purple-300/80 font-normal">Chuyển nhanh sang phòng luyện giọng</div>
+                </div>
+              </button>
+            )}
           </div>
         </div>
       )}
+
 
       {/* Main Toggle Floating Button */}
       <button

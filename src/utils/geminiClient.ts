@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { AiProvider, GeneratedLessonCommand, LessonGeneratorForm } from '../types';
+import { AiProvider, GeneratedLessonCommand, LessonGeneratorForm, ScenarioItem } from '../types';
 
 export type { AiProvider };
 
@@ -288,4 +288,141 @@ Hãy trả về JSON hợp lệ theo đúng cấu trúc yêu cầu.`;
   }
 
   throw lastError || new Error('Không thể kết nối đến các model Google AI. Vui lòng kiểm tra lại kết nối mạng hoặc API Key.');
+}
+
+/**
+ * AI Sáng Tạo Tình Huống Sư Phạm
+ * Giáo viên nhập tình huống lớp học, AI sinh ra 3 lựa chọn khẩu lệnh tiếng Anh
+ */
+export interface GenerateScenarioResponse {
+  scenario: ScenarioItem;
+  modelUsed: string;
+}
+
+export async function generateScenarioCommandsWithGemini(
+  situation: string,
+  grade: string,
+  onProgress?: (status: string) => void
+): Promise<GenerateScenarioResponse> {
+  const config = getStoredAiConfig();
+  if (!config.apiKey || !isValidGoogleAiApiKey(config.apiKey)) {
+    throw new Error('Vui lòng cấu hình API Key hợp lệ trước khi sử dụng tính năng này.');
+  }
+
+  const client = createGoogleAiClient(config.apiKey, config.provider);
+  const models = getOrderedFallbackModels(config.provider, config.selectedModel);
+
+  const systemInstruction = `Bạn là Chuyên gia Sư phạm Tiếng Anh Tiểu Học thuộc Đề án "Môi trường Tiếng Anh học đường 2025–2035 — Trường Tiểu học Lê Kim Lăng" (Mrs. Huong).
+
+Nhiệm vụ: Dựa trên TÌNH HUỐNG LỚP HỌC THỰC TẾ mà giáo viên mô tả, bạn phải sáng tạo ra 3 lựa chọn phản ứng bằng khẩu lệnh Tiếng Anh:
+
+- **Đáp án A**: Câu khẩu lệnh Tiếng Anh CHUẨN MỰC SƯ PHẠM NHẤT (isBest = true) — dùng kỷ luật tích cực, Call & Response, có TPR, đúng chuẩn mực nhà giáo tiểu học.
+- **Đáp án B**: Câu khẩu lệnh Tiếng Anh KHÁC — có thể chấp nhận được nhưng không tối ưu.
+- **Đáp án C**: Câu phản ứng Tiếng Anh THIẾU SƯ PHẠM hoặc quá nghiêm khắc — để giáo viên nhận biết cách nên tránh.
+
+YÊU CẦU BẮT BUỘC:
+- Mỗi lựa chọn phải có: englishText (câu tiếng Anh), vietnameseText (dịch), rationale (phân tích sư phạm chi tiết)
+- Phải có trường pedagogicalTip — lời khuyên sư phạm tổng hợp từ Mrs. Huong
+- Phải có title — tiêu đề ngắn gọn mô tả tình huống
+
+ĐẦU RA BẮT BUỘC LÀ JSON OBJECT:
+{
+  "title": "Tiêu đề tình huống",
+  "situation": "Mô tả lại tình huống",
+  "options": [
+    {
+      "id": "opt-a",
+      "englishText": "...",
+      "vietnameseText": "...",
+      "rationale": "...",
+      "isBest": true
+    },
+    {
+      "id": "opt-b",
+      "englishText": "...",
+      "vietnameseText": "...",
+      "rationale": "...",
+      "isBest": false
+    },
+    {
+      "id": "opt-c",
+      "englishText": "...",
+      "vietnameseText": "...",
+      "rationale": "...",
+      "isBest": false
+    }
+  ],
+  "pedagogicalTip": "Lời khuyên sư phạm tổng hợp của Mrs. Huong cho tình huống này."
+}`;
+
+  const userPrompt = `Giáo viên mô tả tình huống thực tế trong lớp học tiểu học:
+
+- Khối lớp: ${grade}
+- Tình huống: "${situation}"
+
+Hãy sáng tạo 3 lựa chọn khẩu lệnh Tiếng Anh phản ứng với tình huống trên. Trả về JSON theo đúng cấu trúc yêu cầu.`;
+
+  let lastError: any = null;
+
+  for (let i = 0; i < models.length; i++) {
+    const currentModel = models[i];
+    try {
+      if (i > 0) {
+        onProgress?.(`Model ${models[i - 1]} đang bận, chuyển sang ${currentModel}...`);
+      } else {
+        onProgress?.(`Đang sáng tạo khẩu lệnh với ${currentModel}...`);
+      }
+
+      const response = await client.models.generateContent({
+        model: currentModel,
+        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+        config: {
+          systemInstruction,
+          responseMimeType: 'application/json',
+          maxOutputTokens: 2048
+        }
+      });
+
+      const responseText = response.text || '';
+      const parsed = JSON.parse(responseText);
+
+      if (!parsed || !Array.isArray(parsed.options) || parsed.options.length === 0) {
+        throw new Error('AI trả về dữ liệu không đúng định dạng.');
+      }
+
+      const scenario: ScenarioItem = {
+        id: `scen-custom-${Date.now()}`,
+        title: parsed.title || 'Tình huống tùy chỉnh',
+        grade: grade,
+        situation: parsed.situation || situation,
+        options: parsed.options.map((opt: any, idx: number) => ({
+          id: opt.id || `opt-custom-${idx}`,
+          englishText: opt.englishText || '',
+          vietnameseText: opt.vietnameseText || '',
+          rationale: opt.rationale || '',
+          isBest: Boolean(opt.isBest)
+        })),
+        pedagogicalTip: parsed.pedagogicalTip || 'Hãy luôn dùng kỷ luật tích cực và khẩu lệnh Call & Response.'
+      };
+
+      return { scenario, modelUsed: currentModel };
+    } catch (err: any) {
+      lastError = err;
+      const errorType = parseApiError(err);
+
+      if (errorType === 'INVALID_API_KEY') {
+        throw new Error('API Key không hợp lệ hoặc đã hết hạn.');
+      }
+      if (errorType === 'PERMISSION_DENIED') {
+        throw new Error('API Key không có quyền truy cập.');
+      }
+      if (errorType === 'QUOTA_EXCEEDED') {
+        throw new Error('Đã hết quota. Vui lòng thử lại sau.');
+      }
+
+      console.warn(`Model ${currentModel} gặp lỗi (${errorType}), thử model dự phòng...`, err);
+    }
+  }
+
+  throw lastError || new Error('Không thể kết nối đến Google AI.');
 }

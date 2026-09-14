@@ -126,7 +126,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
           <span>Professional Teacher Certification & Assessment</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-          Trung Tâm Đánh Giá & Chứng Nhận Sư Phạm
+          Trung tâm đánh giá & chứng nhận sư phạm
         </h1>
         <p className="text-slate-500 text-xs sm:text-sm max-w-3xl">
           Kiểm tra nhanh phản xạ điều hành lớp, nhận bộ huy hiệu nghiệp vụ và xuất chứng chỉ điện tử chuẩn quốc gia dành cho giáo viên tiểu học.
@@ -139,7 +139,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
               <HelpCircle className="w-5 h-5 text-blue-600" />
-              <span>1. Mini-Quiz Sư Phạm: Khẩu Lệnh & Phản Xạ Lớp Học</span>
+              <span>1. Mini-Quiz sư phạm: khẩu lệnh & phản xạ lớp học</span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               5 câu hỏi trắc nghiệm thực chiến về kỹ thuật Call & Response và phản xạ TPR
@@ -268,7 +268,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
               <GraduationCap className="w-5 h-5 text-amber-600" />
-              <span>2. Cấp Chứng Chỉ Số Nghiệp Vụ Sư Phạm (Digital Certificate)</span>
+              <span>2. Cấp chứng chỉ số nghiệp vụ sư phạm (Digital Certificate)</span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Chứng chỉ A4 ngang trang trọng, chuẩn sư phạm, có thể in màu hoặc lưu dạng PDF chất lượng cao
@@ -342,7 +342,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
         <div className="bg-white rounded-3xl p-4 sm:p-8 border border-slate-200/80 shadow-lg overflow-x-auto">
           <div 
             id="certificate-printable-card"
-            className="w-full min-w-[760px] max-w-[940px] mx-auto bg-amber-50/30 border-[10px] border-double border-amber-800/60 p-8 sm:p-10 rounded-xl relative shadow-inner font-serif-cert"
+            className="w-full min-w-[760px] max-w-[940px] mx-auto bg-amber-50/30 border-[10px] border-double border-amber-800/60 p-8 sm:p-10 rounded-xl relative shadow-inner"
             style={{ minHeight: '520px' }}
           >
             {/* Corner Decorative Floral Flourishes */}
@@ -355,13 +355,13 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
             <div className="border border-amber-600/40 p-6 rounded-lg text-center space-y-4 h-full flex flex-col justify-between">
               {/* Header */}
               <div className="space-y-1">
-                <div className="text-[10px] tracking-[0.25em] font-bold text-amber-900 uppercase">
-                  TRƯỜNG TIỂU HỌC LÊ KIM LĂNG • ĐỀ ÁN MÔI TRƯỜNG NGÔN NGỮ TIẾNG ANH 2025–2035
+                <div className="text-[10px] tracking-[0.25em] font-bold text-amber-900 uppercase font-sans">
+                  Trường Tiểu Học Lê Kim Lăng • Đề Án Môi Trường Ngôn Ngữ Tiếng Anh 2025–2035
                 </div>
-                <div className="text-2xl sm:text-3xl font-extrabold text-amber-950 uppercase tracking-wider">
-                  CHỨNG NHẬN NGHIỆP VỤ SƯ PHẠM
+                <div className="text-2xl sm:text-3xl font-extrabold text-amber-950 uppercase tracking-wider font-serif-cert">
+                  Chứng Nhận Nghiệp Vụ Sư Phạm
                 </div>
-                <div className="text-xs font-serif italic text-amber-800">
+                <div className="text-xs italic text-amber-800 font-serif-body">
                   Certificate of Primary Classroom English Proficiency & Sunflower TPR Mastery
                 </div>
                 <div className="w-28 h-0.5 bg-amber-500 mx-auto mt-2" />
@@ -369,8 +369,8 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
 
               {/* Body Presentation */}
               <div className="space-y-2 py-2">
-                <div className="text-xs text-slate-600 italic">Chứng nhận danh dự trao tặng cho Thầy/Cô:</div>
-                <div className="text-2xl sm:text-3xl font-black text-amber-900 tracking-wide font-sans">
+                <div className="text-xs text-slate-600 italic font-serif-body">Chứng nhận danh dự trao tặng cho Thầy/Cô:</div>
+                <div className="text-2xl sm:text-3xl font-black text-amber-900 tracking-wide font-serif-cert">
                   {teacherName || 'Cô Lê Thị Thu Hương'}
                 </div>
                 <div className="text-sm font-semibold text-slate-700 font-sans">
@@ -397,18 +397,18 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
                   <div className="w-20 h-20 rounded-full border-4 border-amber-500/80 bg-linear-to-br from-amber-400 via-amber-500 to-yellow-600 text-white flex flex-col items-center justify-center shadow-md p-1">
                     <span className="text-lg">🌻</span>
                     <span className="text-[8px] font-black uppercase text-center leading-tight mt-0.5">
-                      TH LÊ KIM LĂNG<br/>SUNFLOWER 2026
+                      TH Lê Kim Lăng<br/>Sunflower 2026
                     </span>
                   </div>
-                  <span className="text-[9px] text-amber-900 font-bold uppercase mt-1">Dấu ấn Mrs. Huong</span>
+                  <span className="text-[9px] text-amber-900 font-bold uppercase mt-1 font-sans">Dấu Ấn Mrs. Huong</span>
                 </div>
 
                 {/* Right: Signature */}
                 <div className="text-right space-y-1">
                   <div className="text-[11px] text-slate-600">Ngày {currentDate}</div>
                   <div className="text-xs font-bold text-slate-900">Giáo Viên Phụ Trách Đề Án</div>
-                  <div className="font-serif italic text-amber-900 text-sm pt-2">Cô Lê Thị Thu Hương</div>
-                  <div className="text-[10px] text-slate-500">Trường Tiểu học Lê Kim Lăng</div>
+                  <div className="italic text-amber-900 text-sm pt-2 font-serif-cert">Cô Lê Thị Thu Hương</div>
+                  <div className="text-[10px] text-slate-500 font-sans">Trường Tiểu học Lê Kim Lăng</div>
                 </div>
               </div>
             </div>
@@ -421,7 +421,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
         <div className="border-b border-slate-100 pb-4">
           <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
             <Award className="w-5 h-5 text-blue-600" />
-            <span>3. Ví Huy Hiệu Nghiệp Vụ (Badges Collection)</span>
+            <span>3. Ví huy hiệu nghiệp vụ (Badges Collection)</span>
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
             Mở khóa các cột mốc kỹ năng trong suốt quá trình tham gia câu lạc bộ

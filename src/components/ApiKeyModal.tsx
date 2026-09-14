@@ -136,8 +136,8 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({
               <Key className="w-5 h-5 text-amber-100" />
             </div>
             <div>
-              <h2 className="text-base font-extrabold tracking-tight">Cấu Hình Google AI API Key</h2>
-              <p className="text-xs text-amber-100/90 font-medium">Kích hoạt trợ lý AI Soạn Câu Lệnh Sư Phạm</p>
+              <h2 className="text-base font-extrabold tracking-tight">Cấu hình Google AI API Key</h2>
+              <p className="text-xs text-amber-100/90 font-medium">Kích hoạt trợ lý AI soạn câu lệnh sư phạm</p>
             </div>
           </div>
           <button
