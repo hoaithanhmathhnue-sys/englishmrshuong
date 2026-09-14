@@ -445,8 +445,9 @@ export default function App() {
           </div>
 
           <div className="pt-6 border-t border-amber-100 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2">
-            <div>
-              © 2025–2035 Sunflower English Garden • Trường Tiểu học Lê Kim Lăng.
+            <div className="leading-relaxed text-center sm:text-left">
+              <div>© 2025–2035 Sunflower English Garden</div>
+              <div className="text-slate-500 font-medium">Tác giả: GV Lê Thị Thu Hương - Trường Tiểu học Lê Kim Lăng.</div>
             </div>
             <div className="flex items-center gap-1 text-slate-500">
               <span>Được xây dựng với tình yêu thương dành cho giáo viên và học trò tiểu học</span>
