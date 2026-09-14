@@ -7,7 +7,7 @@ export interface EncouragementFeedback {
 
 export const SUNFLOWER_SLOGAN = {
   english: 'Shine Together, Speak Together',
-  vietnamese: 'Như Hoa Hướng Dương Vươn Tới Ánh Mặt Trời Tiếng Anh',
+  vietnamese: 'Như hoa hướng dương vươn tới ánh mặt trời',
   school: 'Trường Tiểu học Lê Kim Lăng — Môi trường ngôn ngữ giao tiếp 2025–2035',
   author: 'Cô Lê Thị Thu Hương (Mrs. Huong) — Giáo viên Trường TH Lê Kim Lăng'
 };

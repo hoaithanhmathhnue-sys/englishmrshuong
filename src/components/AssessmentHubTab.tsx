@@ -378,7 +378,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
                 </div>
 
                 <p className="text-xs font-sans text-slate-600 max-w-xl mx-auto leading-relaxed pt-2">
-                  Đã hoàn thành xuất sắc chương trình bồi dưỡng <strong>Khẩu Lệnh Tiếng Anh Sư Phạm Tiểu Học (Classroom English K-5 & Môn Toán)</strong>, làm chủ các khẩu lệnh điều hành lớp học, thuần thục kỹ năng phản xạ cử chỉ hình thể <strong>TPR</strong> và lan tỏa tinh thần <em>"Shine Together, Speak Together — Như Hoa Hướng Dương Vươn Tới Ánh Mặt Trời Tiếng Anh"</em>.
+                  Đã hoàn thành xuất sắc chương trình bồi dưỡng <strong>Khẩu lệnh tiếng Anh sư phạm tiểu học (Classroom English K-5 &amp; Môn Toán)</strong>, làm chủ các khẩu lệnh điều hành lớp học, thuần thục kỹ năng phản xạ cử chỉ hình thể <strong>TPR</strong> và lan tỏa tinh thần <em>"Shine Together, Speak Together — Như hoa hướng dương vươn tới ánh mặt trời"</em>.
                 </p>
               </div>
 

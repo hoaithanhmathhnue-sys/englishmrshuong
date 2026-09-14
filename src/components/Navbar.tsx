@@ -171,26 +171,28 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile / Tablet Horizontal Scroll Navigation */}
-      <div className="xl:hidden border-t border-amber-100 bg-amber-50/60 px-2 py-1.5 flex items-center gap-1 overflow-x-auto no-scrollbar">
-        {tabs.map(tab => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 py-1.5 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
-                isActive
-                  ? 'bg-amber-500 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-amber-800 hover:bg-amber-100/60'
-              }`}
-            >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
+      {/* Mobile / Tablet Grid Navigation — 2 rows × 3 columns */}
+      <div className="xl:hidden border-t border-amber-100 bg-amber-50/60 px-2 py-1.5">
+        <div className="grid grid-cols-3 gap-1">
+          {tabs.map(tab => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                  isActive
+                    ? 'bg-amber-500 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-amber-800 hover:bg-amber-100/60'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                <span className="truncate">{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </header>
   );
