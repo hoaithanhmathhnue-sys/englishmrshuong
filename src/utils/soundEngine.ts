@@ -1,8 +1,8 @@
 /**
  * Web Audio API Soundboard Generator
- * Synthesizes 8 classroom sound effects purely in-browser using AudioContext & Oscillators
- * Zero external audio files required!
+ * Synthesizes classroom sound effects with AudioContext & supports real audio files (votay.mp3)
  */
+import votayAudioUrl from '../assets/votay.mp3';
 
 let audioCtx: AudioContext | null = null;
 
@@ -78,14 +78,38 @@ export function playMagicWand(): void {
   });
 }
 
-/** 3. Applause: Synthesized clapping bursts using noise buffers (optimized) */
+let cachedClapAudio: HTMLAudioElement | null = null;
+
+/** 3. Applause: Phát file âm thanh vỗ tay thực tế (votay.mp3) */
 export function playApplause(): void {
+  try {
+    // Sử dụng file âm thanh votay.mp3 được import bởi Vite hoặc đường dẫn tĩnh /amthanh/votay.mp3
+    const audioSrc = votayAudioUrl || '/amthanh/votay.mp3';
+    
+    // Tạo audio object mới hoặc reset lại để cho phép phát liên tiếp khi gv bấm nhiều lần
+    const audio = new Audio(audioSrc);
+    audio.volume = 0.9;
+    const playPromise = audio.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.warn('Không thể phát file votay.mp3 trực tiếp, chuyển sang âm thanh dự phòng:', err);
+        playSynthesizedApplause();
+      });
+    }
+  } catch (err) {
+    console.warn('Lỗi khi phát audio file, dùng fallback:', err);
+    playSynthesizedApplause();
+  }
+}
+
+/** Fallback: Âm thanh vỗ tay tổng hợp bằng Web Audio API khi không load được file */
+export function playSynthesizedApplause(): void {
   const ctx = getAudioContext();
   const now = ctx.currentTime;
-  const totalClaps = 16; // Reduced from 28 for faster execution
+  const totalClaps = 16;
   const bufferSize = Math.floor(ctx.sampleRate * 0.08);
 
-  // Create ONE noise buffer and reuse it for all claps
   const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
   const data = buffer.getChannelData(0);
   for (let j = 0; j < bufferSize; j++) {
