@@ -1,0 +1,51 @@
+Dưới đây là bản phân tích chuyên sâu về giao diện, bố cục (UI/UX Architecture) của ứng dụng này:
+1. Định Vị & Triết Lý Bố Cục (UX Concept)
+Mục tiêu người dùng: Giáo viên đứng lớp cần tra cứu nhanh từ vựng chuyên ngành, mẫu câu hướng dẫn (scaffolding prompts), điều khiển lớp học trong tích tắc mà không làm gián đoạn nhịp giảng dạy.
+Quy tắc thiết kế chủ đạo:
+Mobile-First & Thumb-Zone Friendly: Các nút bấm điều hướng chính nằm trong tầm với của ngón cái, kích thước chạm lớn (≥ 44px) để thao tác bằng 1 tay khi giáo viên đang cầm phấn hoặc di chuyển quanh lớp.
+Zero-Latency / Micro-interactions: Chuyển tab và phát âm thanh tức thì (không tải lại trang), giảm thiểu tối đa số lần nhấp chuột (clicks).
+2. Phân Tích Chi Tiết Các Tầng Bố Cục (Layout Hierarchy)
+🔹 A. Tầng Đầu Trang (Header & Top Navigation)
+Thành phần:
+Logo & App Title: Tên nhận diện "EMI Pocket Teacher" cùng huy hiệu "Kỹ thuật số / Trợ giảng EMI".
+Bộ chọn môn học nhanh (Subject Switcher): Dạng nút gạt hoặc Dropdown (Toán học - Math, Khoa học - Science, Hoạt động trải nghiệm - Activities).
+Thanh trạng thái / Streak học tập: Hiển thị chuỗi ngày rèn luyện và profile giáo viên.
+Ý nghĩa bố cục: Chiếm diện tích nhỏ gọn (chiều cao khoảng 56–64px), cố định (sticky top-0) để giải phóng tối đa không gian màn hình cho nội dung chính.
+🔹 B. Tầng Điều Hướng Trung Tâm (Tab Bar / Segmented Control)
+Bố cục dạng Segmented Buttons hoặc Bottom Navigation chia thành các nhóm nghiệp vụ rõ ràng:
+Từ điển bỏ túi (Pocket Glossary): Tra cứu nhanh thuật ngữ Toán / Khoa học song ngữ kèm phiên âm IPA và audio phát âm.
+Mẫu câu chỉ dẫn sư phạm (Classroom Instructional Prompts): Các câu dẫn nhập bài, chia nhóm, hướng dẫn làm thí nghiệm hay giải bài tập bằng tiếng Anh.
+Hộp công cụ tương tác (Quick Teaching Toolkit): Bộ đếm ngược thời gian thảo luận (Classroom Timer), vòng quay gọi tên ngẫu nhiên (Random Picker), và bàn âm thanh hiệu ứng (Soundboard).
+Luyện phát âm & Phản xạ AI (AI Voice Lab): Nơi giáo viên thu âm luyện giọng trước giờ lên lớp.
+🔹 C. Tầng Thân Ứng Dụng (Main Content Canvas)
+Bố cục dạng Thẻ (Card-Based Layout):
+Mỗi thuật ngữ hoặc mẫu câu được đóng gói trong một thẻ độc lập (Card) với viền bo góc (rounded-2xl), khoảng cách đệm thoáng đãng.
+Thẻ thuật ngữ:
+Tiêu đề tiếng Anh in đậm cỡ chữ lớn + Phiên âm IPA.
+Nút loa phát âm 2 tốc độ: Chuẩn (1.0x) và Chậm (0.7x).
+Khung dịch nghĩa tiếng Việt & câu ví dụ ngữ cảnh trong bài giảng thực tế.
+Nút đánh dấu yêu thích (Bookmark) để ghim vào mục "Bài giảng hôm nay".
+Bố cục 2 cột (trên Desktop/Tablet) hoặc 1 cột cuộn mượt (trên Mobile):
+Bên trái: Danh sách tìm kiếm & danh mục bài học.
+Bên phải: Chi tiết khẩu lệnh, cử chỉ trực quan và khu vực luyện tập tương tác.
+🔹 D. Tầng Công Cụ Trực Tiếp Trên Lớp (Action & Soundboard Dock)
+Thiết kế dạng Bàn phím nổi (Floating Dock) hoặc Grid 4-8 nút to:
+Các nút âm thanh điều hành lớp học: Chuông ổn định trật tự (Chime), Khen thưởng (Applause/Magic Wand), Đếm ngược 5 giây (Countdown).
+Sử dụng màu sắc tương phản cao (Vàng Amber, Xanh Ngọc Emerald, Đỏ Cam) để giáo viên nhận diện và bấm ngay cả khi chỉ nhìn lướt qua màn hình.
+3. Đánh Giá Màu Sắc & Kiểu Chữ (Design System & Typography)
+Yếu tố	Đặc điểm giao diện EMI Pocket Teacher	Tác động tâm lý sư phạm
+Màu chủ đạo	Xanh Navy / Royal Blue (#1e40af, #3b82f6)	Tạo cảm giác chuyên nghiệp, học thuật, đáng tin cậy.
+Màu điểm nhấn	Vàng hổ phách / Cam sáng (#f59e0b, #fbbf24)	Kích thích năng lượng, sự ấm áp và hào hứng cho học sinh.
+Màu nền	Trắng ngà / Xám nhạt (#f8fafc)	Giảm độ chói khi sử dụng dưới ánh đèn phòng học hoặc máy chiếu.
+Typography	Font sans-serif hiện đại (như Plus Jakarta Sans, Lexend)	Chữ có độ rộng lớn, nét rõ ràng, tối ưu cho việc đọc lướt nhanh.
+Phản hồi âm thanh	Web Audio API / Web Speech API	Không phụ thuộc file audio ngoài, phản hồi tức thì trong vòng 50ms.
+4. So Sánh Với Ứng Dụng Bạn Đang Xây Dựng (CLB Tiếng Anh Giáo Viên Tiểu Học)
+Điểm tương đồng xuất sắc:
+Đều ứng dụng Web Speech API (phát âm 1.0x/0.7x) và Web Audio API (Soundboard không lỗi 404).
+Đều hỗ trợ Voice AI chấm điểm phát âm và lưu trữ tiến trình qua localStorage.
+Điểm bổ trợ độc đáo giữa hai ứng dụng:
+Ứng dụng CLB hiện tại: Chuyên sâu vào Classroom English, cử chỉ hình thể TPR, ngữ điệu sư phạm và cấp chứng chỉ số.
+Ứng dụng EMI Pocket Teacher: Chuyên sâu vào tính cơ động bỏ túi, thuật ngữ bài học Toán/Khoa học (EMI) và công cụ điều phối trực tiếp tại bục giảng.
+💡 Gợi ý nếu bạn muốn đưa thêm tinh hoa của "EMI Pocket Teacher" vào ứng dụng hiện tại:
+Thêm một thanh công cụ "Mini Floating Dock" (chế độ thu nhỏ) để giáo viên có thể đặt điện thoại trên bàn giáo viên và chỉ bấm 1 nút là phát ngay âm thanh chuông hoặc khẩu lệnh.
+Bổ sung thêm chuyên mục Khẩu lệnh cho môn Toán & Khoa học (STEM EMI Commands) vào Thư viện 24 câu hiện có.

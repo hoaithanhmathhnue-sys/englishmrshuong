@@ -1,0 +1,6 @@
+{
+  "name": "English Communication Club for Primary School Teachers",
+  "description": "Ứng dụng rèn luyện phản xạ tiếng Anh sư phạm (Classroom English), điều hành lớp học bằng khẩu lệnh kèm cử chỉ hình thể TPR, luyện ngữ điệu giảng dạy và cấp chứng chỉ số cho giáo viên tiểu học.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
