@@ -62,63 +62,51 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Main Navbar */}
+      {/* Main Navbar Top Row: Logo, Trang chủ & Tiện ích */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-2">
-          {/* Logo & Brand */}
-          <div 
-            onClick={() => setActiveTab('dashboard')}
-            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none shrink-0"
-            id="app-logo-brand"
-          >
-            <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-amber-400 via-amber-500 to-yellow-600 flex items-center justify-center text-white shadow-md shadow-amber-500/25 group-hover:scale-105 transition-transform duration-200 text-xl">
-              🌻
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-black text-slate-900 text-base sm:text-lg tracking-tight leading-none group-hover:text-amber-600 transition-colors">
-                  Sunflower English
-                </span>
-                <span className="text-[10px] font-extrabold uppercase bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded-md hidden sm:inline-block border border-amber-200">
-                  Mrs. Huong
-                </span>
+        <div className="flex items-center justify-between h-16 gap-3">
+          {/* Left: Logo & Brand + Nút Trang chủ */}
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div 
+              onClick={() => setActiveTab('dashboard')}
+              className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none shrink-0"
+              id="app-logo-brand"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-amber-400 via-amber-500 to-yellow-600 flex items-center justify-center text-white shadow-md shadow-amber-500/25 group-hover:scale-105 transition-transform duration-200 text-xl">
+                🌻
               </div>
-              <p className="text-[11px] text-amber-800 font-semibold hidden sm:block leading-tight mt-0.5">
-                Trường Tiểu học Lê Kim Lăng
-              </p>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-black text-slate-900 text-base sm:text-lg tracking-tight leading-none group-hover:text-amber-600 transition-colors">
+                    Sunflower English
+                  </span>
+                  <span className="text-[10px] font-extrabold uppercase bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded-md hidden sm:inline-block border border-amber-200">
+                    Mrs. Huong
+                  </span>
+                </div>
+                <p className="text-[11px] text-amber-800 font-semibold hidden sm:block leading-tight mt-0.5">
+                  Trường Tiểu học Lê Kim Lăng
+                </p>
+              </div>
             </div>
+
+            {/* Nút Trang chủ riêng biệt trên hàng tiêu đề app */}
+            <button
+              id="nav-tab-dashboard"
+              onClick={() => setActiveTab('dashboard')}
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs shrink-0 ${
+                activeTab === 'dashboard'
+                  ? 'bg-amber-500 text-white shadow-amber-500/30 ring-2 ring-amber-300/70'
+                  : 'bg-amber-50 text-amber-900 hover:bg-amber-100/90 hover:text-amber-950 border border-amber-200/90'
+              }`}
+            >
+              <Home className={`w-4 h-4 ${activeTab === 'dashboard' ? 'text-white' : 'text-amber-600'}`} />
+              <span>Trang chủ</span>
+            </button>
           </div>
 
-          {/* Navigation Links - Desktop */}
-          <nav className="hidden xl:flex items-center gap-1">
-            {tabs.map(tab => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  id={`nav-tab-${tab.id}`}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 relative ${
-                    isActive 
-                      ? 'bg-amber-500 text-white shadow-sm shadow-amber-500/30' 
-                      : 'text-slate-600 hover:text-amber-800 hover:bg-amber-50/70'
-                  }`}
-                >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-yellow-200' : 'text-slate-500'}`} />
-                  <span>{tab.label}</span>
-                  {tab.badge && !isActive && (
-                    <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-extrabold bg-amber-100 text-amber-900 border border-amber-200">
-                      {tab.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-
           {/* Right Status Badges & Profile */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* API Key Modal Button */}
             <button
               onClick={onOpenApiKeyModal}
@@ -132,7 +120,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Golden Seeds Bag */}
             <div 
               title="Túi hạt vàng Hướng Dương tích lũy"
-              className="flex items-center gap-1 bg-yellow-50 border border-yellow-200 text-yellow-900 px-2.5 py-1.5 rounded-xl text-xs font-black shadow-2xs cursor-default"
+              className="flex items-center gap-1 bg-yellow-50 border border-yellow-200 text-yellow-900 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-black shadow-2xs cursor-default"
             >
               <span className="text-sm">🌾</span>
               <span>{progress.goldenSeeds || 0}</span>
@@ -142,7 +130,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Streak Widget */}
             <div 
               title="Chuỗi ngày học liên tục"
-              className="flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-900 px-2.5 py-1.5 rounded-xl text-xs font-bold shadow-2xs cursor-default"
+              className="flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-900 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-bold shadow-2xs cursor-default"
             >
               <Flame className="w-4 h-4 text-amber-500 fill-amber-500 animate-pulse" />
               <span>{progress.streak}</span>
@@ -153,7 +141,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenProfileModal}
               id="btn-teacher-profile"
-              className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl border border-slate-200 hover:border-amber-300 hover:bg-amber-50/50 transition-all text-left bg-white text-xs font-medium text-slate-700 shadow-2xs"
+              className="flex items-center gap-1.5 sm:gap-2 pl-2 pr-2.5 sm:pr-3 py-1.5 rounded-xl border border-slate-200 hover:border-amber-300 hover:bg-amber-50/50 transition-all text-left bg-white text-xs font-medium text-slate-700 shadow-2xs"
             >
               <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs shrink-0">
                 <User className="w-3.5 h-3.5 text-amber-700" />
@@ -171,27 +159,41 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile / Tablet Grid Navigation — 2 rows × 3 columns */}
-      <div className="xl:hidden border-t border-amber-100 bg-amber-50/60 px-2 py-1.5">
-        <div className="grid grid-cols-3 gap-1">
-          {tabs.map(tab => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                  isActive
-                    ? 'bg-amber-500 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-amber-800 hover:bg-amber-100/60'
-                }`}
-              >
-                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-                <span className="truncate">{tab.label}</span>
-              </button>
-            );
-          })}
+      {/* Menu chức năng mới: 2 hàng 3 cột ở giữa tiêu đề app và mục Đề án */}
+      <div className="border-t border-amber-200/70 bg-gradient-to-b from-amber-50/70 to-white/90 py-2.5 sm:py-3 px-3 sm:px-6 shadow-xs">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
+            {tabs.filter(t => t.id !== 'dashboard').map(tab => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  id={`nav-tab-${tab.id}`}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center justify-between sm:justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 border cursor-pointer select-none ${
+                    isActive
+                      ? 'bg-linear-to-r from-amber-500 via-amber-500 to-yellow-500 text-white shadow-md shadow-amber-500/25 border-amber-400 font-black ring-2 ring-amber-300/70 translate-y-[-1px]'
+                      : 'bg-white hover:bg-amber-50/90 text-slate-700 hover:text-amber-900 border-amber-200/80 shadow-2xs hover:shadow-xs hover:border-amber-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                    <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${isActive ? 'text-yellow-100' : 'text-amber-600'}`} />
+                    <span className="truncate">{tab.label}</span>
+                  </div>
+                  {tab.badge && (
+                    <span className={`shrink-0 text-[9px] sm:text-[10px] font-extrabold px-1.5 py-0.5 rounded-full border ${
+                      isActive
+                        ? 'bg-white/20 text-white border-white/30'
+                        : 'bg-amber-100 text-amber-900 border-amber-200'
+                    }`}>
+                      {tab.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </header>
