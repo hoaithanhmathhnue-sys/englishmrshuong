@@ -109,7 +109,7 @@ export const CommandLibraryTab: React.FC<CommandLibraryTabProps> = ({
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold mb-2">
               <span className="text-sm">🌻</span>
-              <span>Kho tư liệu sư phạm chuẩn hóa • Tổ Tiếng Anh</span>
+              <span>Kho tư liệu sư phạm chuẩn hóa</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               Thư viện câu lệnh đút túi 2.0

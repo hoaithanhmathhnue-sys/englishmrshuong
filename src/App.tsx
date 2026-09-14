@@ -361,7 +361,7 @@ export default function App() {
                     Sunflower English Garden • Trường TH Lê Kim Lăng
                   </span>
                   <span className="text-[11px] font-semibold text-amber-600">
-                    Sáng kiến phát triển chuyên môn 2025–2035 • Tổ Tiếng Anh Trường TH Lê Kim Lăng
+                    Sáng kiến phát triển chuyên môn 2025–2035 • Trường TH Lê Kim Lăng
                   </span>
                 </div>
               </div>
@@ -387,16 +387,16 @@ export default function App() {
             <div className="space-y-2 text-xs">
               <div className="font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                Danh Mục Tính Năng 2.0
+                Danh mục tính năng 2.0
               </div>
               <div>
                 <button onClick={() => handleNavigateTab('dashboard')} className="hover:text-amber-600 transition">
-                  🌻 Vườn Hướng Dương & 10 Câu Tháng
+                  🌻 Vườn hướng dương & 10 câu trong tháng
                 </button>
               </div>
               <div>
                 <button onClick={() => handleNavigateTab('library')} className="hover:text-amber-600 transition">
-                  📚 Thư viện 52 câu lệnh (Toán, Đồng nghiệp)
+                  📚 Thư viện 52 câu lệnh (Toán, đồng nghiệp)
                 </button>
               </div>
               <div>
@@ -406,7 +406,7 @@ export default function App() {
               </div>
               <div>
                 <button onClick={() => handleNavigateTab('aigenerator')} className="hover:text-amber-600 transition font-semibold text-amber-700">
-                  ✨ AI Soạn câu lệnh theo bài học
+                  ✨ AI soạn câu lệnh theo bài học
                 </button>
               </div>
               <div>
@@ -416,7 +416,7 @@ export default function App() {
               </div>
               <div>
                 <button onClick={() => handleNavigateTab('certification')} className="hover:text-amber-600 transition">
-                  🎓 Khảo sát & Chứng chỉ Lê Kim Lăng
+                  🎓 Khảo sát & chứng chỉ Lê Kim Lăng
                 </button>
               </div>
             </div>
@@ -424,16 +424,16 @@ export default function App() {
             {/* Col 3: Pedagogical Standards */}
             <div className="space-y-2 text-xs">
               <div className="font-bold text-slate-900 uppercase tracking-wider mb-2">
-                Trụ Cột Sư Phạm 2025–2035
+                Trụ cột sư phạm 2025–2035
               </div>
               <div className="text-slate-500">
-                • 10 Khẩu lệnh trọng tâm theo tháng
+                • 10 khẩu lệnh trọng tâm theo tháng
               </div>
               <div className="text-slate-500">
-                • 16 Mẫu câu Tiếng Anh dạy Toán (Table 4)
+                • 16 mẫu câu tiếng Anh dạy Toán
               </div>
               <div className="text-slate-500">
-                • 12 Mẫu câu Giao tiếp đồng nghiệp (Table 5)
+                • 12 mẫu câu giao tiếp đồng nghiệp
               </div>
               <div className="text-slate-500">
                 • Mini Floating Dock điều hành lớp học 1 tay
@@ -446,7 +446,7 @@ export default function App() {
 
           <div className="pt-6 border-t border-amber-100 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2">
             <div>
-              © 2025–2035 Sunflower English Garden • Trường Tiểu học Lê Kim Lăng. Biên tập bởi các giáo viên Tiếng Anh.
+              © 2025–2035 Sunflower English Garden • Trường Tiểu học Lê Kim Lăng.
             </div>
             <div className="flex items-center gap-1 text-slate-500">
               <span>Được xây dựng với tình yêu thương dành cho giáo viên và học trò tiểu học</span>

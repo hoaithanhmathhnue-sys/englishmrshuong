@@ -54,7 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-3 text-amber-100 text-[11px]">
             <span className="hidden md:flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5 text-yellow-200" />
-              <span>Chủ đề Hoa Hướng Dương • Biên tập bởi giáo viên Tiếng Anh</span>
+              <span>Chủ đề Hoa Hướng Dương • Môi trường ngôn ngữ 2025–2035</span>
             </span>
             <span className="hidden md:inline text-amber-200/60">|</span>
             <span className="text-white font-semibold">Mỗi ngày 1 câu • Mỗi tháng 10 câu</span>
@@ -76,14 +76,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 🌻
               </div>
               <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-black text-slate-900 text-base sm:text-lg tracking-tight leading-none group-hover:text-amber-600 transition-colors">
-                    Sunflower English
-                  </span>
-                  <span className="text-[10px] font-extrabold uppercase bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded-md hidden sm:inline-block border border-amber-200">
-                    Tổ Tiếng Anh
-                  </span>
-                </div>
+                <span className="font-black text-slate-900 text-base sm:text-lg tracking-tight leading-none group-hover:text-amber-600 transition-colors block">
+                  Sunflower English
+                </span>
                 <p className="text-[11px] text-amber-800 font-semibold hidden sm:block leading-tight mt-0.5">
                   Trường Tiểu học Lê Kim Lăng
                 </p>

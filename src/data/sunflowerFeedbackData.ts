@@ -6,16 +6,16 @@ export interface EncouragementFeedback {
 }
 
 export const SUNFLOWER_SLOGAN = {
-  english: 'Shine Together, Speak Together',
+  english: 'Shine together, speak together',
   vietnamese: 'Như hoa hướng dương vươn tới ánh mặt trời',
   school: 'Trường Tiểu học Lê Kim Lăng — Môi trường ngôn ngữ giao tiếp 2025–2035',
-  author: 'Tập thể giáo viên Tiếng Anh — Trường TH Lê Kim Lăng'
+  author: 'Trường TH Lê Kim Lăng'
 };
 
 export const FOUNDER_NOTE = {
-  title: 'Lời nhắn gửi từ các giáo viên Tiếng Anh',
-  author: 'Tổ Tiếng Anh',
-  school: 'Trường Tiểu học Lê Kim Lăng',
+  title: 'Thông điệp truyền cảm hứng',
+  author: 'Trường Tiểu học Lê Kim Lăng',
+  school: 'Đề án môi trường tiếng Anh 2025–2035',
   content: `Chào quý thầy cô thân thương,
 
 Giống như những bông hoa hướng dương luôn kiên trì vươn mình về phía ánh mặt trời, hành trình đưa Tiếng Anh vào lớp học của chúng ta cũng cần sự bền bỉ và năng lượng tích cực mỗi ngày.

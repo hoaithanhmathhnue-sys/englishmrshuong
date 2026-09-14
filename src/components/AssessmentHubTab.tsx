@@ -378,7 +378,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
                 </div>
 
                 <p className="text-xs font-sans text-slate-600 max-w-xl mx-auto leading-relaxed pt-2">
-                  Đã hoàn thành xuất sắc chương trình bồi dưỡng <strong>Khẩu lệnh tiếng Anh sư phạm tiểu học (Classroom English K-5 &amp; Môn Toán)</strong>, làm chủ các khẩu lệnh điều hành lớp học, thuần thục kỹ năng phản xạ cử chỉ hình thể <strong>TPR</strong> và lan tỏa tinh thần <em>"Shine Together, Speak Together — Như hoa hướng dương vươn tới ánh mặt trời"</em>.
+                  Đã hoàn thành xuất sắc chương trình bồi dưỡng <strong>Khẩu lệnh tiếng Anh sư phạm tiểu học (Classroom English K-5 &amp; Môn Toán)</strong>, làm chủ các khẩu lệnh điều hành lớp học, thuần thục kỹ năng phản xạ cử chỉ hình thể <strong>TPR</strong> và lan tỏa tinh thần <em>"Shine together, speak together — Như hoa hướng dương vươn tới ánh mặt trời"</em>.
                 </p>
               </div>
 
@@ -400,15 +400,15 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
                       TH Lê Kim Lăng<br/>Sunflower 2026
                     </span>
                   </div>
-                  <span className="text-[9px] text-amber-900 font-bold uppercase mt-1 font-sans">Tổ Tiếng Anh</span>
+                  <span className="text-[9px] text-amber-900 font-bold uppercase mt-1 font-sans">Chứng Nhận Chuyên Môn</span>
                 </div>
 
                 {/* Right: Signature */}
                 <div className="text-right space-y-1">
                   <div className="text-[11px] text-slate-600">Ngày {currentDate}</div>
-                  <div className="text-xs font-bold text-slate-900">Đại Diện Tổ Tiếng Anh</div>
-                  <div className="italic text-amber-900 text-sm pt-2 font-serif-cert">Ban Chuyên Môn Tiếng Anh</div>
-                  <div className="text-[10px] text-slate-500 font-sans">Trường Tiểu học Lê Kim Lăng</div>
+                  <div className="text-xs font-bold text-slate-900">Ban Chuyên Môn</div>
+                  <div className="italic text-amber-900 text-sm pt-2 font-serif-cert">Trường TH Lê Kim Lăng</div>
+                  <div className="text-[10px] text-slate-500 font-sans">Đề án ngôn ngữ 2025–2035</div>
                 </div>
               </div>
             </div>

@@ -123,7 +123,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             </h1>
 
             <p className="text-yellow-100 text-sm sm:text-base font-medium max-w-2xl leading-relaxed">
-              {SUNFLOWER_SLOGAN.vietnamese} — Sáng kiến tâm huyết từ các giáo viên Tiếng Anh Trường Tiểu học Lê Kim Lăng. Giúp mỗi thầy cô tự tin trao đổi, lan tỏa môi trường Tiếng Anh tự nhiên tới học sinh thân yêu.
+              {SUNFLOWER_SLOGAN.vietnamese} — Sáng kiến phát triển môi trường ngôn ngữ Trường Tiểu học Lê Kim Lăng. Giúp mỗi thầy cô tự tin trao đổi, lan tỏa môi trường Tiếng Anh tự nhiên tới học sinh thân yêu.
             </p>
 
             {/* Quick Action CTAs */}
@@ -436,7 +436,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             🌟
           </div>
           <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-amber-700 transition-colors">
-            10 Câu Lệnh Trong Tháng
+            10 câu lệnh trong tháng
           </h3>
           <p className="text-xs text-slate-500 leading-relaxed">
             Bộ 10 câu trọng tâm bắt buộc rèn luyện để áp dụng trôi chảy vào giờ dạy.
@@ -456,7 +456,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             📐
           </div>
           <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-amber-700 transition-colors">
-            Tiếng Anh Môn Toán
+            Tiếng Anh môn Toán
           </h3>
           <p className="text-xs text-slate-500 leading-relaxed">
             16 câu lệnh chuẩn cho tiết Toán: số đếm, cộng/trừ, hình học, bảng con.
@@ -476,7 +476,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             👥
           </div>
           <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-amber-700 transition-colors">
-            Giao Tiếp Đồng Nghiệp
+            Giao tiếp đồng nghiệp
           </h3>
           <p className="text-xs text-slate-500 leading-relaxed">
             12 câu giao tiếp tự nhiên ngoài hành lang, văn phòng và giờ giải lao.
