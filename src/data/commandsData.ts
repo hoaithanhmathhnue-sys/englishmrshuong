@@ -437,6 +437,7 @@ export const INITIAL_COMMANDS: CommandItem[] = [
 
 import { MATH_COMMANDS } from './mathCommandsData';
 import { COLLEAGUE_COMMANDS } from './colleagueCommandsData';
+import { VocabCategory } from '../types';
 
 // Gán cờ 10 câu bắt buộc trong tháng cho 10 câu đầu tiên
 INITIAL_COMMANDS.slice(0, 10).forEach(cmd => {
@@ -449,4 +450,104 @@ export const ALL_APP_COMMANDS: CommandItem[] = [
   ...MATH_COMMANDS,
   ...COLLEAGUE_COMMANDS
 ];
+
+// === Vocabdaily.lklschool: Mapping 4 nhóm chính theo DOCX ===
+const VOCAB_CATEGORY_MAP: Record<string, VocabCategory> = {
+  // 🌅 Greeting & Starting — Chào hỏi, khởi động, tạo năng lượng đầu tiết
+  'cmd-07': 'Greeting & Starting',   // Are you ready?
+  'cmd-04': 'Greeting & Starting',   // Hocus pocus
+  'cmd-21': 'Greeting & Starting',   // High five, give me ten!
+  'cmd-14': 'Greeting & Starting',   // Mirror, mirror on the wall
+  'cmd-17': 'Greeting & Starting',   // Holy moly
+  'cmd-11': 'Greeting & Starting',   // Macaroni and cheese
+
+  // 📚 Classroom Instructions — Ổn định, chú ý, quản lý lớp, đồ dùng
+  'cmd-01': 'Classroom Instructions', // 1,2,3 eyes on me
+  'cmd-02': 'Classroom Instructions', // Flat tire shhh
+  'cmd-03': 'Classroom Instructions', // Hands on top
+  'cmd-05': 'Classroom Instructions', // Show me your red pencil
+  'cmd-08': 'Classroom Instructions', // Zip your lips
+  'cmd-10': 'Classroom Instructions', // Give me five
+  'cmd-18': 'Classroom Instructions', // Voices off in 3,2,1
+  'cmd-19': 'Classroom Instructions', // Catch the bubble
+  'cmd-22': 'Classroom Instructions', // Open your books to page ten
+  'cmd-24': 'Classroom Instructions', // Line up quietly by the door
+  'cmd-09': 'Classroom Instructions', // Clean up, clean up
+
+  // ⭐ Praise & Encouragement — Khen thưởng, động viên
+  'cmd-06': 'Praise & Encouragement', // Good job, good job!
+  'cmd-12': 'Praise & Encouragement', // To infinity and beyond
+
+  // 💬 Daily Communication — Giao tiếp hàng ngày, hỏi đáp, chia nhóm, kết thúc
+  'cmd-13': 'Daily Communication',    // Find a partner
+  'cmd-15': 'Daily Communication',    // Who wants to try?
+  'cmd-16': 'Daily Communication',    // Ready to switch?
+  'cmd-20': 'Daily Communication',    // Pack your bags, time to go
+  'cmd-23': 'Daily Communication',    // Can you hear me at the back?
+};
+
+// Math commands → Classroom Instructions
+MATH_COMMANDS.forEach(cmd => {
+  VOCAB_CATEGORY_MAP[cmd.id] = 'Classroom Instructions';
+});
+
+// Colleague commands → Daily Communication
+COLLEAGUE_COMMANDS.forEach(cmd => {
+  VOCAB_CATEGORY_MAP[cmd.id] = 'Daily Communication';
+});
+
+// Apply vocabCategory to all commands
+ALL_APP_COMMANDS.forEach(cmd => {
+  cmd.vocabCategory = VOCAB_CATEGORY_MAP[cmd.id] || 'Classroom Instructions';
+});
+
+// Helper: get commands by VocabCategory
+export function getCommandsByVocabCategory(category: VocabCategory): CommandItem[] {
+  return ALL_APP_COMMANDS.filter(cmd => cmd.vocabCategory === category);
+}
+
+// Vocab category metadata for UI
+export const VOCAB_CATEGORIES_META = [
+  {
+    id: 'Greeting & Starting' as VocabCategory,
+    icon: '🌅',
+    label: 'Greeting & Starting',
+    description: 'Start the day with energy!',
+    color: 'from-orange-400 to-amber-400',
+    bgColor: 'bg-orange-50',
+    borderColor: 'border-orange-200',
+    textColor: 'text-orange-900',
+  },
+  {
+    id: 'Classroom Instructions' as VocabCategory,
+    icon: '📚',
+    label: 'Classroom Instructions',
+    description: 'Manage your class effectively',
+    color: 'from-blue-400 to-indigo-400',
+    bgColor: 'bg-blue-50',
+    borderColor: 'border-blue-200',
+    textColor: 'text-blue-900',
+  },
+  {
+    id: 'Praise & Encouragement' as VocabCategory,
+    icon: '⭐',
+    label: 'Praise & Encouragement',
+    description: 'Motivate and inspire students',
+    color: 'from-yellow-400 to-amber-500',
+    bgColor: 'bg-yellow-50',
+    borderColor: 'border-yellow-200',
+    textColor: 'text-yellow-900',
+  },
+  {
+    id: 'Daily Communication' as VocabCategory,
+    icon: '💬',
+    label: 'Daily Communication',
+    description: 'Everyday phrases for teachers',
+    color: 'from-emerald-400 to-teal-400',
+    bgColor: 'bg-emerald-50',
+    borderColor: 'border-emerald-200',
+    textColor: 'text-emerald-900',
+  },
+] as const;
+
 

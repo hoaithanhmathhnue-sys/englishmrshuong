@@ -49,16 +49,6 @@ import {
   LearningHistoryEntry,
   HistoryEntryType
 } from './types';
-import { 
-  Sun,
-  GraduationCap, 
-  Heart, 
-  ShieldCheck, 
-  Sparkles, 
-  Key,
-  BookOpen,
-  Gamepad2
-} from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -259,7 +249,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-amber-50/30 text-slate-900 pb-20 sm:pb-12">
+    <div className="min-h-screen flex flex-col bg-[#FAFAFA] text-[#222222] pb-20 sm:pb-12">
       {/* Sticky Top Navigation with Sunflower theme */}
       <Navbar
         activeTab={activeTab}
@@ -270,7 +260,7 @@ export default function App() {
       />
 
       {/* Main Tab Content Viewport */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
         {activeTab === 'dashboard' && (
           <DashboardTab
             commands={ALL_APP_COMMANDS}
@@ -324,9 +314,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'soundboard' && (
-          <CommunityToolsTab />
-        )}
+
       </main>
 
       {/* Mini Floating Dock điều hành lớp học trực tiếp trên bục giảng */}
@@ -346,114 +334,10 @@ export default function App() {
         onClose={() => setIsApiKeyModalOpen(false)}
       />
 
-      {/* Footer Sunflower - Trường TH Lê Kim Lăng */}
-      <footer className="bg-white border-t border-amber-200 mt-16 text-slate-600 no-print shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Col 1: Brand & Slogan */}
-            <div className="space-y-3 md:col-span-2">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-amber-900 flex items-center justify-center font-bold shadow-sm shadow-amber-200">
-                  <Sun className="w-5 h-5 text-amber-800 animate-spin-slow" />
-                </div>
-                <div>
-                  <span className="text-base font-extrabold text-slate-900 block leading-tight">
-                    Sunflower English Garden • Trường TH Lê Kim Lăng
-                  </span>
-                  <span className="text-[11px] font-semibold text-amber-600">
-                    Sáng kiến phát triển chuyên môn 2025–2035 • Trường TH Lê Kim Lăng
-                  </span>
-                </div>
-              </div>
-              <p className="text-xs text-slate-500 leading-relaxed max-w-lg">
-                &ldquo;Mỗi câu lệnh là một tia nắng, mỗi nụ cười là một đóa hướng dương nở rộ.&rdquo; Hệ sinh thái rèn luyện tiếng Anh sư phạm kết hợp phản xạ TPR, AI hỗ trợ soạn bài và sân chơi mini-games dành riêng cho thầy cô giáo tiểu học.
-              </p>
-              <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 pt-1">
-                <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 px-2.5 py-1 rounded-full border border-amber-200 font-medium">
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
-                  Đồng hành giáo viên K-5
-                </span>
-                <button
-                  onClick={() => setIsApiKeyModalOpen(true)}
-                  className="inline-flex items-center gap-1.5 text-xs text-amber-700 hover:text-amber-800 hover:underline font-semibold"
-                >
-                  <Key className="w-3.5 h-3.5" />
-                  Cấu hình Google AI Key
-                </button>
-              </div>
-            </div>
-
-            {/* Col 2: Fast Navigation */}
-            <div className="space-y-2 text-xs">
-              <div className="font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                Danh mục tính năng 2.0
-              </div>
-              <div>
-                <button onClick={() => handleNavigateTab('dashboard')} className="hover:text-amber-600 transition">
-                  🌻 Vườn hướng dương & 10 câu trong tháng
-                </button>
-              </div>
-              <div>
-                <button onClick={() => handleNavigateTab('library')} className="hover:text-amber-600 transition">
-                  📚 Thư viện 52 câu lệnh (Toán, đồng nghiệp)
-                </button>
-              </div>
-              <div>
-                <button onClick={() => handleNavigateTab('voicelab')} className="hover:text-amber-600 transition">
-                  🎙️ Voice Lab & Lời động viên sư phạm
-                </button>
-              </div>
-              <div>
-                <button onClick={() => handleNavigateTab('aigenerator')} className="hover:text-amber-600 transition font-semibold text-amber-700">
-                  ✨ AI soạn câu lệnh theo bài học
-                </button>
-              </div>
-              <div>
-                <button onClick={() => handleNavigateTab('arcade')} className="hover:text-amber-600 transition font-semibold text-emerald-700">
-                  🎮 Sunflower Arcade (Game tương tác)
-                </button>
-              </div>
-              <div>
-                <button onClick={() => handleNavigateTab('certification')} className="hover:text-amber-600 transition">
-                  🎓 Khảo sát & chứng chỉ Lê Kim Lăng
-                </button>
-              </div>
-            </div>
-
-            {/* Col 3: Pedagogical Standards */}
-            <div className="space-y-2 text-xs">
-              <div className="font-bold text-slate-900 uppercase tracking-wider mb-2">
-                Trụ cột sư phạm 2025–2035
-              </div>
-              <div className="text-slate-500">
-                • 10 khẩu lệnh trọng tâm theo tháng
-              </div>
-              <div className="text-slate-500">
-                • 16 mẫu câu tiếng Anh dạy Toán
-              </div>
-              <div className="text-slate-500">
-                • 12 mẫu câu giao tiếp đồng nghiệp
-              </div>
-              <div className="text-slate-500">
-                • Mini Floating Dock điều hành lớp học 1 tay
-              </div>
-              <div className="text-slate-500">
-                • Trí tuệ nhân tạo Google Gemini 3 Flash
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-amber-100 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2">
-            <div className="leading-relaxed text-center sm:text-left">
-              <div>© 2025–2035 Sunflower English Garden</div>
-              <div className="text-slate-500 font-medium">Tác giả: GV Lê Thị Thu Hương - Trường Tiểu học Lê Kim Lăng.</div>
-            </div>
-            <div className="flex items-center gap-1 text-slate-500">
-              <span>Được xây dựng với tình yêu thương dành cho giáo viên và học trò tiểu học</span>
-              <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500 inline" />
-            </div>
-          </div>
+      {/* Footer — Vocabdaily.lklschool */}
+      <footer className="bg-white border-t border-gray-200 mt-12 no-print">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 text-center text-[11px] text-[#aaa] font-medium">
+          English in the Classroom — Le Kim Lang Primary School 2026–2027 🌻
         </div>
       </footer>
     </div>

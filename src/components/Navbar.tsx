@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
-  Flame, 
+  Volume2, 
+  VolumeX,
   BookOpen, 
   Mic, 
-  Award, 
-  Volume2, 
-  Home, 
-  User,
   Sparkles,
-  Key,
   Gamepad2,
-  Cpu
+  Award,
+  ChevronDown,
+  Menu,
+  X
 } from 'lucide-react';
 import { UserProgress } from '../types';
 
@@ -29,168 +28,194 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenProfileModal,
   onOpenApiKeyModal
 }) => {
-  const tabs = [
-    { id: 'dashboard', label: 'Trang chủ', icon: Home, badge: null },
-    { id: 'library', label: 'Thư viện 52 câu', icon: BookOpen, badge: '52 câu' },
-    { id: 'voicelab', label: 'Luyện Voice AI', icon: Mic, badge: 'Chuẩn âm' },
-    { id: 'aigenerator', label: 'AI soạn bài', icon: Sparkles, badge: 'Mới' },
-    { id: 'arcade', label: 'Sunflower Arcade', icon: Gamepad2, badge: 'Game' },
-    { id: 'certification', label: 'Chứng chỉ & Bảng vàng', icon: Award, badge: progress.masteredIds.length >= 5 ? 'Sẵn sàng' : null },
-    { id: 'soundboard', label: 'Soundboard lớp học', icon: Volume2, badge: '8 âm' }
+  const [isSoundOn, setIsSoundOn] = useState(true);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+
+  const mainTabs = [
+    { id: 'dashboard', label: 'Phrases', icon: BookOpen },
+    { id: 'voicelab', label: 'Voice Lab', icon: Mic },
+  ];
+
+  const moreTabs = [
+    { id: 'aigenerator', label: 'AI Generator', icon: Sparkles },
+    { id: 'arcade', label: 'Arcade', icon: Gamepad2 },
+    { id: 'certification', label: 'Certificates', icon: Award },
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-amber-200/80 shadow-xs no-print">
-      {/* Top micro announcement bar with Sunflower theme */}
-      <div className="bg-linear-to-r from-amber-600 via-amber-500 to-yellow-600 text-white text-xs py-1.5 px-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 font-medium tracking-wide">
-            <span className="inline-flex items-center justify-center bg-white text-amber-900 font-extrabold px-1.5 py-0.5 rounded-sm text-[10px]">
-              🌻 2025–2035
-            </span>
-            <span className="hidden sm:inline">Trường Tiểu học Lê Kim Lăng — Môi trường ngôn ngữ giao tiếp</span>
-            <span className="sm:hidden font-bold">TH Lê Kim Lăng • Môi trường Tiếng Anh</span>
-          </div>
-          <div className="flex items-center gap-3 text-amber-100 text-[11px]">
-            <span className="hidden md:flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-yellow-200" />
-              <span>Chủ đề Hoa Hướng Dương • Môi trường ngôn ngữ 2025–2035</span>
-            </span>
-            <span className="hidden md:inline text-amber-200/60">|</span>
-            <span className="text-white font-semibold">Mỗi ngày 1 câu • Mỗi tháng 10 câu</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Navbar Top Row: Logo, Trang chủ & Tiện ích */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-3">
-          {/* Left: Logo & Brand + Nút Trang chủ */}
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <div 
-              onClick={() => setActiveTab('dashboard')}
-              className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none shrink-0"
-              id="app-logo-brand"
-            >
-              <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-amber-400 via-amber-500 to-yellow-600 flex items-center justify-center text-white shadow-md shadow-amber-500/25 group-hover:scale-105 transition-transform duration-200 text-xl">
-                🌻
-              </div>
-              <div>
-                <span className="font-black text-slate-900 text-base sm:text-lg tracking-tight leading-none group-hover:text-amber-600 transition-colors block">
-                  Sunflower English
-                </span>
-                <p className="text-[11px] text-amber-800 font-semibold hidden sm:block leading-tight mt-0.5">
-                  Trường Tiểu học Lê Kim Lăng
-                </p>
-              </div>
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#FFB800]/20 shadow-sm no-print">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-14 sm:h-16 gap-3">
+          {/* Left: Logo — 🌻 Vocabdaily | lklschool */}
+          <div 
+            onClick={() => setActiveTab('dashboard')}
+            className="flex items-center gap-2.5 cursor-pointer group select-none shrink-0"
+            id="app-logo-brand"
+          >
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#FFB800] flex items-center justify-center text-white shadow-md shadow-[#FFB800]/25 group-hover:scale-105 transition-transform duration-200 text-lg sm:text-xl sunflower-glow">
+              🌻
             </div>
-
-            {/* Nút Trang chủ riêng biệt trên hàng tiêu đề app */}
-            <button
-              id="nav-tab-dashboard"
-              onClick={() => setActiveTab('dashboard')}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs shrink-0 ${
-                activeTab === 'dashboard'
-                  ? 'bg-amber-500 text-white shadow-amber-500/30 ring-2 ring-amber-300/70'
-                  : 'bg-amber-50 text-amber-900 hover:bg-amber-100/90 hover:text-amber-950 border border-amber-200/90'
-              }`}
-            >
-              <Home className={`w-4 h-4 ${activeTab === 'dashboard' ? 'text-white' : 'text-amber-600'}`} />
-              <span>Trang chủ</span>
-            </button>
+            <div>
+              <span className="font-black text-[#222222] text-sm sm:text-base tracking-tight leading-none group-hover:text-[#FFB800] transition-colors block">
+                Vocabdaily
+              </span>
+              <span className="text-[10px] sm:text-[11px] text-[#888] font-semibold leading-tight block">
+                lklschool
+              </span>
+            </div>
           </div>
 
-          {/* Right Status Badges & Profile */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-            {/* API Key Modal Button */}
-            <button
-              onClick={onOpenApiKeyModal}
-              title="Cài đặt API Key Google AI (Gemini / Agent Platform)"
-              className="p-2 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 transition-colors flex items-center gap-1 text-xs font-bold shadow-2xs"
-            >
-              <Key className="w-4 h-4 text-amber-600" />
-              <span className="hidden md:inline">API Key</span>
-            </button>
-
-            {/* Golden Seeds Bag */}
-            <div 
-              title="Túi hạt vàng Hướng Dương tích lũy"
-              className="flex items-center gap-1 bg-yellow-50 border border-yellow-200 text-yellow-900 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-black shadow-2xs cursor-default"
-            >
-              <span className="text-sm">🌾</span>
-              <span>{progress.goldenSeeds || 0}</span>
-              <span className="hidden sm:inline text-yellow-700 text-[10px] font-bold">hạt</span>
-            </div>
-
-            {/* Streak Widget */}
-            <div 
-              title="Chuỗi ngày học liên tục"
-              className="flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-900 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-bold shadow-2xs cursor-default"
-            >
-              <Flame className="w-4 h-4 text-amber-500 fill-amber-500 animate-pulse" />
-              <span>{progress.streak}</span>
-              <span className="hidden sm:inline text-amber-700 text-[10px] font-semibold">ngày</span>
-            </div>
-
-            {/* Teacher Profile Button */}
-            <button
-              onClick={onOpenProfileModal}
-              id="btn-teacher-profile"
-              className="flex items-center gap-1.5 sm:gap-2 pl-2 pr-2.5 sm:pr-3 py-1.5 rounded-xl border border-slate-200 hover:border-amber-300 hover:bg-amber-50/50 transition-all text-left bg-white text-xs font-medium text-slate-700 shadow-2xs"
-            >
-              <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs shrink-0">
-                <User className="w-3.5 h-3.5 text-amber-700" />
-              </div>
-              <div className="hidden sm:block leading-tight">
-                <div className="text-[11px] font-bold text-slate-800 truncate max-w-[100px]">
-                  {progress.profile.name || 'Giáo viên'}
-                </div>
-                <div className="text-[10px] text-slate-500 truncate max-w-[100px]">
-                  {progress.profile.school ? progress.profile.school.split(',')[0] : 'TH Lê Kim Lăng'}
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Menu chức năng mới: 2 hàng 3 cột ở giữa tiêu đề app và mục Đề án */}
-      <div className="border-t border-amber-200/70 bg-gradient-to-b from-amber-50/70 to-white/90 py-2.5 sm:py-3 px-3 sm:px-6 shadow-xs">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
-            {tabs.filter(t => t.id !== 'dashboard').map(tab => {
+          {/* Center: Main Navigation (desktop) */}
+          <nav className="hidden sm:flex items-center gap-1">
+            {mainTabs.map(tab => {
               const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
+              const isActive = activeTab === tab.id || 
+                (tab.id === 'dashboard' && activeTab === 'library');
               return (
                 <button
                   key={tab.id}
                   id={`nav-tab-${tab.id}`}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center justify-between sm:justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 border cursor-pointer select-none ${
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                     isActive
-                      ? 'bg-linear-to-r from-amber-500 via-amber-500 to-yellow-500 text-white shadow-md shadow-amber-500/25 border-amber-400 font-black ring-2 ring-amber-300/70 translate-y-[-1px]'
-                      : 'bg-white hover:bg-amber-50/90 text-slate-700 hover:text-amber-900 border-amber-200/80 shadow-2xs hover:shadow-xs hover:border-amber-300'
+                      ? 'bg-[#FFB800] text-white shadow-md shadow-[#FFB800]/25'
+                      : 'text-[#444] hover:bg-[#FFB800]/10 hover:text-[#222]'
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                    <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${isActive ? 'text-yellow-100' : 'text-amber-600'}`} />
-                    <span className="truncate">{tab.label}</span>
-                  </div>
-                  {tab.badge && (
-                    <span className={`shrink-0 text-[9px] sm:text-[10px] font-extrabold px-1.5 py-0.5 rounded-full border ${
-                      isActive
-                        ? 'bg-white/20 text-white border-white/30'
-                        : 'bg-amber-100 text-amber-900 border-amber-200'
-                    }`}>
-                      {tab.badge}
-                    </span>
-                  )}
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-[#FFB800]'}`} />
+                  <span>{tab.label}</span>
                 </button>
               );
             })}
+
+            {/* More dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsMoreOpen(!isMoreOpen)}
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                  moreTabs.some(t => t.id === activeTab)
+                    ? 'bg-[#FFB800] text-white shadow-md shadow-[#FFB800]/25'
+                    : 'text-[#444] hover:bg-[#FFB800]/10'
+                }`}
+              >
+                <span>More</span>
+                <ChevronDown className={`w-3 h-3 transition-transform ${isMoreOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isMoreOpen && (
+                <>
+                  <div className="fixed inset-0 z-30" onClick={() => setIsMoreOpen(false)} />
+                  <div className="absolute right-0 top-full mt-1 z-40 bg-white rounded-xl shadow-xl border border-gray-100 py-1 w-48 animate-fadeInUp">
+                    {moreTabs.map(tab => {
+                      const Icon = tab.icon;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => { setActiveTab(tab.id); setIsMoreOpen(false); }}
+                          className={`w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-bold transition-colors ${
+                            activeTab === tab.id
+                              ? 'bg-[#FFB800]/10 text-[#FFB800]'
+                              : 'text-[#444] hover:bg-gray-50'
+                          }`}
+                        >
+                          <Icon className="w-3.5 h-3.5" />
+                          <span>{tab.label}</span>
+                        </button>
+                      );
+                    })}
+                    <div className="border-t border-gray-100 mt-1 pt-1">
+                      <button
+                        onClick={() => { onOpenApiKeyModal(); setIsMoreOpen(false); }}
+                        className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-[#888] hover:bg-gray-50 transition-colors"
+                      >
+                        <span>⚙️</span>
+                        <span>API Settings</span>
+                      </button>
+                      <button
+                        onClick={() => { onOpenProfileModal(); setIsMoreOpen(false); }}
+                        className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-[#888] hover:bg-gray-50 transition-colors"
+                      >
+                        <span>👤</span>
+                        <span>Profile</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </nav>
+
+          {/* Right: Slogan + Sound Toggle */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <span className="hidden md:inline text-xs font-bold text-[#FFB800] tracking-wide">
+              Shine Every Day! 🌻
+            </span>
+
+            {/* Sound Toggle */}
+            <button
+              onClick={() => setIsSoundOn(!isSoundOn)}
+              title={isSoundOn ? 'Sound ON' : 'Sound OFF'}
+              className={`p-2 rounded-xl border transition-all ${
+                isSoundOn 
+                  ? 'bg-[#FFB800]/10 border-[#FFB800]/30 text-[#FFB800]' 
+                  : 'bg-gray-100 border-gray-200 text-gray-400'
+              }`}
+            >
+              {isSoundOn 
+                ? <Volume2 className="w-4 h-4" /> 
+                : <VolumeX className="w-4 h-4" />
+              }
+            </button>
+
+            {/* Mobile Menu */}
+            <button
+              onClick={() => setIsMoreOpen(!isMoreOpen)}
+              className="sm:hidden p-2 rounded-xl border border-gray-200 text-[#444] hover:bg-gray-50 transition-colors"
+            >
+              {isMoreOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Navigation Dropdown */}
+      {isMoreOpen && (
+        <div className="sm:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1 animate-fadeInUp">
+          {[...mainTabs, ...moreTabs].map(tab => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id || 
+              (tab.id === 'dashboard' && activeTab === 'library');
+            return (
+              <button
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setIsMoreOpen(false); }}
+                className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  isActive
+                    ? 'bg-[#FFB800] text-white'
+                    : 'text-[#444] hover:bg-[#FFB800]/10'
+                }`}
+              >
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#FFB800]'}`} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+          <div className="border-t border-gray-100 pt-2 mt-2 flex gap-2">
+            <button
+              onClick={() => { onOpenApiKeyModal(); setIsMoreOpen(false); }}
+              className="flex-1 text-center px-3 py-2 rounded-xl text-xs font-medium text-[#888] bg-gray-50 hover:bg-gray-100"
+            >
+              ⚙️ Settings
+            </button>
+            <button
+              onClick={() => { onOpenProfileModal(); setIsMoreOpen(false); }}
+              className="flex-1 text-center px-3 py-2 rounded-xl text-xs font-medium text-[#888] bg-gray-50 hover:bg-gray-100"
+            >
+              👤 Profile
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

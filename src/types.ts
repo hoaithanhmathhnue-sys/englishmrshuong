@@ -1,5 +1,12 @@
 export type GradeLevel = 'All' | 'Lớp 1' | 'Lớp 2' | 'Lớp 3' | 'Lớp 4' | 'Lớp 5';
 
+// 4 nhóm chính theo DOCX Vocabdaily.lklschool
+export type VocabCategory = 
+  | 'Greeting & Starting'
+  | 'Classroom Instructions'
+  | 'Praise & Encouragement'
+  | 'Daily Communication';
+
 export type CommandCategory = 
   | '10 Câu Lệnh Tháng'
   | 'Tiếng Anh Môn Toán'
@@ -27,6 +34,7 @@ export interface CommandItem {
   context: string;
   gradeLevel: GradeLevel;
   category: CommandCategory;
+  vocabCategory?: VocabCategory;
   isMonthlyRequired?: boolean;
   tprCue: {
     teacherAction: string;
