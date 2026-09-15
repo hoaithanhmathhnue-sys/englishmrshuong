@@ -185,8 +185,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </p>
       </div>
 
-      {/* ═══ 4 CATEGORY TABS (horizontal) ═══ */}
-      <div className="flex overflow-x-auto gap-1.5 pb-1 px-1 pr-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+      {/* ═══ 4 CATEGORY TABS (Grid 2×2) ═══ */}
+      <div className="grid grid-cols-2 gap-2">
         {VOCAB_TAB_META.map(tab => {
           const isActive = activeCategory === tab.id;
           return (
@@ -194,16 +194,15 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               key={tab.id}
               id={`vocab-tab-${tab.shortLabel.toLowerCase()}`}
               onClick={() => setActiveCategory(tab.id)}
-              className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-2 ${
+              className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all border-2 ${
                 isActive
-                  ? `bg-gradient-to-r ${tab.bgGradient} text-white border-transparent shadow-lg shadow-${tab.color}/20`
+                  ? `bg-gradient-to-r ${tab.bgGradient} text-white border-transparent shadow-lg`
                   : `bg-white ${tab.borderColor} text-[#444] hover:shadow-sm`
               }`}
             >
               <span className="text-base">{tab.icon}</span>
-              <span className="hidden sm:inline">{tab.label}</span>
-              <span className="sm:hidden">{tab.shortLabel}</span>
-              <span className={`ml-1 px-1.5 py-0.5 rounded-md text-[10px] font-black ${
+              <span className="truncate">{tab.label}</span>
+              <span className={`shrink-0 px-1.5 py-0.5 rounded-md text-[10px] font-black ${
                 isActive ? 'bg-white/25 text-white' : 'bg-gray-100 text-[#888]'
               }`}>
                 {tab.count}
