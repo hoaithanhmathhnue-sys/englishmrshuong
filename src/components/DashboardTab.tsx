@@ -186,7 +186,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       </div>
 
       {/* ═══ 4 CATEGORY TABS (horizontal) ═══ */}
-      <div className="flex overflow-x-auto gap-1.5 pb-1 -mx-1 px-1 scrollbar-none">
+      <div className="flex overflow-x-auto gap-1.5 pb-1 px-1 pr-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
         {VOCAB_TAB_META.map(tab => {
           const isActive = activeCategory === tab.id;
           return (
