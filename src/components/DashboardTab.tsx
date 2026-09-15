@@ -1,21 +1,16 @@
-import React, { useState, useMemo } from 'react';
-import { 
-  Volume2, 
-  Mic, 
-  RefreshCw, 
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  EyeOff,
-  Play
-} from 'lucide-react';
-import { CommandItem, UserProgress, LearningHistoryEntry, VocabCategory } from '../types';
+import React, { useState } from 'react';
+import { Volume2, Mic } from 'lucide-react';
+import { UserProgress, LearningHistoryEntry, VocabCategory } from '../types';
 import { speakText, stopSpeaking } from '../utils/speech';
-import { ALL_APP_COMMANDS, VOCAB_CATEGORIES_META, getCommandsByVocabCategory } from '../data/commandsData';
+import { 
+  getVocabPhrasesByCategory, 
+  getSubGroups, 
+  VOCAB_TAB_META,
+  VocabPhrase
+} from '../data/vocabPhrasesData';
 
 interface DashboardTabProps {
-  commands: CommandItem[];
+  commands: any[];
   progress: UserProgress;
   learningHistory: LearningHistoryEntry[];
   onNavigateTab: (tab: string, selectedCommandId?: string) => void;
@@ -23,271 +18,239 @@ interface DashboardTabProps {
 }
 
 export const DashboardTab: React.FC<DashboardTabProps> = ({
-  commands,
   progress,
-  learningHistory,
   onNavigateTab,
-  onToggleBookmark
 }) => {
-  // Phrase of the Day: random from all commands
-  const [phraseIndex, setPhraseIndex] = useState(() => Math.floor(Math.random() * commands.length));
-  const [showVietnamese, setShowVietnamese] = useState(false);
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [expandedCategory, setExpandedCategory] = useState<VocabCategory | null>(null);
-  const [cardShowVn, setCardShowVn] = useState<Record<string, boolean>>({});
+  const [activeCategory, setActiveCategory] = useState<VocabCategory>('Greeting & Starting');
+  const [playingId, setPlayingId] = useState<string | null>(null);
 
-  const phraseOfDay = commands[phraseIndex % commands.length];
+  const activeMeta = VOCAB_TAB_META.find(t => t.id === activeCategory)!;
+  const phrases = getVocabPhrasesByCategory(activeCategory);
+  const subGroups = getSubGroups(activeCategory);
 
-  const handleNextPhrase = () => {
+  const handleListen = (phrase: VocabPhrase) => {
     stopSpeaking();
-    setIsPlayingAudio(false);
-    setShowVietnamese(false);
-    setPhraseIndex(prev => (prev + 1) % commands.length);
-  };
-
-  const handlePlayAudio = () => {
-    stopSpeaking();
-    setIsPlayingAudio(true);
-    speakText(`${phraseOfDay.teacherCall}. ${phraseOfDay.studentResponse}`, {
-      rate: 1.0,
-      onEnd: () => setIsPlayingAudio(false)
+    setPlayingId(phrase.id);
+    const text = phrase.response 
+      ? `${phrase.phrase}. ${phrase.response}` 
+      : phrase.phrase;
+    speakText(text, {
+      rate: 0.9,
+      onEnd: () => setPlayingId(null)
     });
   };
 
-  const handlePlayCardAudio = (text: string) => {
-    stopSpeaking();
-    speakText(text, { rate: 1.0 });
-  };
-
-  const toggleCardVn = (id: string) => {
-    setCardShowVn(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  // Get commands for expanded category
-  const expandedCommands = expandedCategory 
-    ? getCommandsByVocabCategory(expandedCategory) 
-    : [];
-
-  return (
-    <div className="space-y-6 max-w-4xl mx-auto pb-16">
-      
-      {/* ═══ HERO SECTION ═══ */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFB800] via-[#FFD54F] to-[#FFB800] text-white p-6 sm:p-8 shadow-lg shadow-[#FFB800]/20">
-        {/* Decorative glow */}
-        <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-white/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-56 h-56 rounded-full bg-yellow-200/15 blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 text-center space-y-3">
-          <div className="text-4xl sm:text-5xl animate-bounce">🌻</div>
-          
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-[#222]">
-            "Small phrases, big changes."
-          </h1>
-          <p className="text-sm sm:text-base font-semibold text-[#222]/70 max-w-lg mx-auto">
-            Inspire your students today! 
-            <span className="text-[#222]/40 text-xs block mt-1">
-              (Click each phrase to listen and practice)
-            </span>
-          </p>
-        </div>
+  // Render phrase item
+  const renderPhrase = (phrase: VocabPhrase, index: number, compact = false) => (
+    <div
+      key={phrase.id}
+      className={`group flex items-center gap-3 rounded-xl border border-gray-100 bg-white hover:border-[#FFB800]/40 hover:shadow-sm transition-all cursor-pointer animate-fadeInUp ${
+        compact ? 'px-3 py-2.5' : 'px-4 py-3'
+      }`}
+      style={{ animationDelay: `${index * 30}ms` }}
+      onClick={() => handleListen(phrase)}
+    >
+      {/* Number or Emoji */}
+      <div className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-base ${
+        activeCategory === 'Classroom Instructions' 
+          ? 'bg-blue-100 text-blue-700 font-black text-sm'
+          : 'bg-gray-50'
+      }`}>
+        {activeCategory === 'Classroom Instructions' ? phrase.order : phrase.emoji}
       </div>
 
-      {/* ═══ PHRASE OF THE DAY WIDGET ═══ */}
-      <div className="bg-white rounded-2xl p-5 sm:p-6 border-2 border-[#FFB800]/30 shadow-sm space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#FFB800] animate-pulse" />
-            <span className="text-xs font-black uppercase tracking-wider text-[#FFB800]">
-              Phrase of the Day
-            </span>
-          </div>
-          <button
-            onClick={handleNextPhrase}
-            className="text-xs font-bold text-[#888] hover:text-[#222] flex items-center gap-1 transition-colors"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span>Next</span>
-          </button>
-        </div>
-
-        {/* Phrase Content */}
-        <div className="space-y-2">
-          <div className="text-xl sm:text-2xl font-black text-[#222] tracking-tight leading-snug">
-            "{phraseOfDay.teacherCall}"
-          </div>
-          <div className="text-sm font-bold text-[#444]">
-            → "{phraseOfDay.studentResponse}"
-          </div>
-
-          {/* Vietnamese toggle */}
-          <div>
-            <button
-              onClick={() => setShowVietnamese(!showVietnamese)}
-              className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[#888] hover:text-[#FFB800] transition-colors"
-            >
-              {showVietnamese ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-              <span>{showVietnamese ? 'Hide Vietnamese' : 'Show Vietnamese'}</span>
-            </button>
-            {showVietnamese && (
-              <p className="text-xs text-[#888] mt-1 italic animate-fadeInUp">
-                {phraseOfDay.vietnameseTranslation}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Action buttons */}
-        <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-          <button
-            onClick={handlePlayAudio}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all ${
-              isPlayingAudio
-                ? 'bg-[#FFB800] text-white shadow-md shadow-[#FFB800]/25'
-                : 'bg-[#FFB800]/10 text-[#FFB800] hover:bg-[#FFB800]/20'
-            }`}
-          >
-            <Volume2 className={`w-4 h-4 ${isPlayingAudio ? 'animate-bounce' : ''}`} />
-            <span>🔊 Listen</span>
-          </button>
-
-          <button
-            onClick={() => onNavigateTab('voicelab', phraseOfDay.id)}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#222] text-white text-xs font-bold hover:bg-[#333] transition-colors"
-          >
-            <Mic className="w-4 h-4" />
-            <span>🎙️ Practice</span>
-          </button>
-        </div>
+      {/* Phrase text */}
+      <div className="flex-1 min-w-0">
+        <span className={`font-bold text-[#222] leading-snug ${compact ? 'text-sm' : 'text-sm sm:text-base'}`}>
+          {phrase.phrase}
+        </span>
+        {phrase.response && (
+          <span className="block text-xs text-[#888] mt-0.5 truncate">
+            → {phrase.response}
+          </span>
+        )}
       </div>
 
-      {/* ═══ 4 CATEGORY CARDS (Grid 2×2) ═══ */}
-      <div className="space-y-3">
-        <h2 className="text-sm font-black text-[#222] uppercase tracking-wider px-1">
-          Browse by Category
-        </h2>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {VOCAB_CATEGORIES_META.map((cat, idx) => {
-            const catCommands = getCommandsByVocabCategory(cat.id);
-            const isExpanded = expandedCategory === cat.id;
-            const masteredInCat = catCommands.filter(c => progress.masteredIds.includes(c.id)).length;
+      {/* Listen button */}
+      <button
+        onClick={(e) => { e.stopPropagation(); handleListen(phrase); }}
+        className={`shrink-0 p-2 rounded-lg transition-all ${
+          playingId === phrase.id
+            ? 'bg-[#FFB800] text-white shadow-md shadow-[#FFB800]/30'
+            : 'bg-gray-100 text-[#888] hover:bg-[#FFB800]/20 hover:text-[#FFB800]'
+        }`}
+        title="Listen"
+      >
+        <Volume2 className={`w-4 h-4 ${playingId === phrase.id ? 'animate-pulse' : ''}`} />
+      </button>
+    </div>
+  );
 
+  // Render category content based on type
+  const renderCategoryContent = () => {
+    // === Greeting & Starting: 2 subgroups stacked ===
+    if (activeCategory === 'Greeting & Starting') {
+      return (
+        <div className="space-y-6">
+          {subGroups.map(group => {
+            const groupPhrases = phrases.filter(p => p.subGroup === group);
             return (
-              <div key={cat.id} className="animate-fadeInUp" style={{ animationDelay: `${idx * 80}ms` }}>
-                <button
-                  onClick={() => setExpandedCategory(isExpanded ? null : cat.id)}
-                  className={`w-full text-left rounded-2xl p-4 sm:p-5 border-2 transition-all hover:shadow-md group ${
-                    isExpanded
-                      ? `${cat.bgColor} ${cat.borderColor} shadow-md`
-                      : `bg-white ${cat.borderColor} hover:${cat.bgColor}`
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">
-                        {cat.icon}
-                      </span>
-                      <div>
-                        <h3 className="text-sm sm:text-base font-black text-[#222]">
-                          {cat.label}
-                        </h3>
-                        <p className="text-[11px] text-[#888] font-medium">
-                          {cat.description}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] font-bold text-[#888] bg-gray-100 px-2 py-0.5 rounded-full">
-                        {catCommands.length} phrases
-                      </span>
-                      {isExpanded 
-                        ? <ChevronUp className="w-4 h-4 text-[#888]" />
-                        : <ChevronDown className="w-4 h-4 text-[#888]" />
-                      }
-                    </div>
+              <div key={group}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="px-3 py-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-400 text-white text-xs font-black uppercase tracking-wider shadow-sm">
+                    {group}
                   </div>
-                  
-                  {masteredInCat > 0 && (
-                    <div className="mt-2 flex items-center gap-1.5">
-                      <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full bg-gradient-to-r ${cat.color} transition-all duration-500`}
-                          style={{ width: `${Math.min(100, (masteredInCat / catCommands.length) * 100)}%` }}
-                        />
-                      </div>
-                      <span className="text-[10px] font-bold text-[#888]">
-                        {masteredInCat}/{catCommands.length}
-                      </span>
-                    </div>
-                  )}
-                </button>
-
-                {/* Expanded Phrase Cards */}
-                {isExpanded && (
-                  <div className="mt-2 space-y-2 animate-fadeInUp">
-                    {catCommands.map(cmd => (
-                      <div 
-                        key={cmd.id}
-                        className="bg-white rounded-xl p-4 border border-gray-200 hover:border-[#FFB800]/40 transition-all space-y-2"
-                      >
-                        {/* English phrase — big & bold */}
-                        <div className="text-base sm:text-lg font-black text-[#222] leading-snug">
-                          "{cmd.teacherCall}"
-                        </div>
-                        
-                        {cmd.studentResponse && (
-                          <div className="text-sm font-semibold text-[#444]">
-                            → "{cmd.studentResponse}"
-                          </div>
-                        )}
-
-                        {/* Vietnamese — hidden by default */}
-                        <div>
-                          <button
-                            onClick={() => toggleCardVn(cmd.id)}
-                            className="text-[10px] font-semibold text-[#aaa] hover:text-[#FFB800] flex items-center gap-1 transition-colors"
-                          >
-                            {cardShowVn[cmd.id] ? <EyeOff className="w-2.5 h-2.5" /> : <Eye className="w-2.5 h-2.5" />}
-                            <span>{cardShowVn[cmd.id] ? 'Hide' : 'Tiếng Việt'}</span>
-                          </button>
-                          {cardShowVn[cmd.id] && (
-                            <p className="text-xs text-[#999] mt-0.5 italic">
-                              {cmd.vietnameseTranslation}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Action buttons */}
-                        <div className="flex items-center gap-2 pt-1">
-                          <button
-                            onClick={() => handlePlayCardAudio(`${cmd.teacherCall}. ${cmd.studentResponse}`)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FFB800]/10 text-[#FFB800] text-xs font-bold hover:bg-[#FFB800]/20 transition-colors"
-                          >
-                            <Volume2 className="w-3.5 h-3.5" />
-                            <span>Listen</span>
-                          </button>
-                          <button
-                            onClick={() => onNavigateTab('voicelab', cmd.id)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#222] text-white text-xs font-bold hover:bg-[#333] transition-colors"
-                          >
-                            <Mic className="w-3.5 h-3.5" />
-                            <span>Practice</span>
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                  <span className="text-[10px] font-bold text-[#aaa]">{groupPhrases.length} phrases</span>
+                </div>
+                <div className="space-y-1.5">
+                  {groupPhrases.map((p, i) => renderPhrase(p, i))}
+                </div>
               </div>
             );
           })}
         </div>
+      );
+    }
+
+    // === Classroom Instructions: Grid 2 cột (1-8 / 9-16) ===
+    if (activeCategory === 'Classroom Instructions') {
+      const half = Math.ceil(phrases.length / 2);
+      const col1 = phrases.slice(0, half);
+      const col2 = phrases.slice(half);
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+          <div className="space-y-1.5">
+            {col1.map((p, i) => renderPhrase(p, i, true))}
+          </div>
+          <div className="space-y-1.5">
+            {col2.map((p, i) => renderPhrase(p, i + half, true))}
+          </div>
+        </div>
+      );
+    }
+
+    // === Praise & Encouragement: Grid 2 cột ===
+    if (activeCategory === 'Praise & Encouragement') {
+      const half = Math.ceil(phrases.length / 2);
+      const col1 = phrases.slice(0, half);
+      const col2 = phrases.slice(half);
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+          <div className="space-y-1.5">
+            {col1.map((p, i) => renderPhrase(p, i))}
+          </div>
+          <div className="space-y-1.5">
+            {col2.map((p, i) => renderPhrase(p, i + half))}
+          </div>
+        </div>
+      );
+    }
+
+    // === Daily Communication: 2 subgroups side by side ===
+    if (activeCategory === 'Daily Communication') {
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {subGroups.map(group => {
+            const groupPhrases = phrases.filter(p => p.subGroup === group);
+            return (
+              <div key={group}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-violet-400 text-white text-xs font-black tracking-wide shadow-sm">
+                    {group}
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  {groupPhrases.map((p, i) => renderPhrase(p, i))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <div className="space-y-5 max-w-4xl mx-auto pb-16">
+
+      {/* ═══ HERO — Compact ═══ */}
+      <div className="text-center py-4 space-y-1">
+        <h1 className="text-2xl sm:text-3xl font-black text-[#222] tracking-tight">
+          🌻 Vocabdaily
+        </h1>
+        <p className="text-sm font-semibold text-[#888]">
+          "Small phrases, big changes." — <span className="text-[#FFB800]">Shine Every Day!</span>
+        </p>
       </div>
 
-      {/* ═══ Quick Stats (compact) ═══ */}
-      <div className="flex items-center justify-center gap-6 py-4 text-center">
+      {/* ═══ 4 CATEGORY TABS (horizontal) ═══ */}
+      <div className="flex overflow-x-auto gap-1.5 pb-1 -mx-1 px-1 scrollbar-none">
+        {VOCAB_TAB_META.map(tab => {
+          const isActive = activeCategory === tab.id;
+          return (
+            <button
+              key={tab.id}
+              id={`vocab-tab-${tab.shortLabel.toLowerCase()}`}
+              onClick={() => setActiveCategory(tab.id)}
+              className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-2 ${
+                isActive
+                  ? `bg-gradient-to-r ${tab.bgGradient} text-white border-transparent shadow-lg shadow-${tab.color}/20`
+                  : `bg-white ${tab.borderColor} text-[#444] hover:shadow-sm`
+              }`}
+            >
+              <span className="text-base">{tab.icon}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.shortLabel}</span>
+              <span className={`ml-1 px-1.5 py-0.5 rounded-md text-[10px] font-black ${
+                isActive ? 'bg-white/25 text-white' : 'bg-gray-100 text-[#888]'
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ═══ CATEGORY CONTENT CARD ═══ */}
+      <div className={`rounded-2xl border-2 ${activeMeta.borderColor} bg-white shadow-sm overflow-hidden`}>
+        {/* Category Header Banner */}
+        <div className={`${activeMeta.headerBg} px-5 py-3.5 flex items-center justify-between`}>
+          <div className="flex items-center gap-2.5">
+            <span className="text-2xl">{activeMeta.icon}</span>
+            <div>
+              <h2 className="text-base sm:text-lg font-black text-white tracking-tight">
+                {activeMeta.label}
+              </h2>
+            </div>
+          </div>
+          <span className="text-xs font-bold text-white/80 bg-white/20 px-2.5 py-1 rounded-lg">
+            {activeMeta.count} phrases
+          </span>
+        </div>
+
+        {/* Phrases List */}
+        <div className="p-4 sm:p-5">
+          {renderCategoryContent()}
+        </div>
+      </div>
+
+      {/* ═══ Voice Lab CTA ═══ */}
+      <div className="flex justify-center">
+        <button
+          onClick={() => onNavigateTab('voicelab')}
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#222] text-white text-sm font-bold hover:bg-[#333] transition-colors shadow-md"
+        >
+          <Mic className="w-4 h-4" />
+          <span>🎙️ Open Voice Lab — Practice Pronunciation</span>
+        </button>
+      </div>
+
+      {/* ═══ Quick Stats ═══ */}
+      <div className="flex items-center justify-center gap-6 py-3 text-center">
         <div>
-          <div className="text-lg font-black text-[#FFB800]">{commands.length}</div>
+          <div className="text-lg font-black text-[#FFB800]">56</div>
           <div className="text-[10px] font-bold text-[#888] uppercase">Total Phrases</div>
         </div>
         <div className="w-px h-8 bg-gray-200" />
@@ -301,6 +264,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           <div className="text-[10px] font-bold text-[#888] uppercase">Day Streak 🔥</div>
         </div>
       </div>
+
+      {/* Footer credit */}
+      <p className="text-center text-[10px] text-[#bbb] font-medium">
+        Click any phrase to listen 🔊 • Open Voice Lab to practice 🎙️
+      </p>
     </div>
   );
 };

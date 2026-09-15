@@ -229,9 +229,14 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
 
       if (result.accuracyScore >= 85) {
         confetti({
-          particleCount: 70,
-          spread: 60,
-          origin: { y: 0.65 }
+          particleCount: 30,
+          spread: 50,
+          origin: { y: 0.7 },
+          decay: 0.92,
+          ticks: 80,
+          scalar: 0.8,
+          gravity: 1.2,
+          disableForReducedMotion: true
         });
       }
     }
@@ -246,9 +251,14 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
     onRecordScore(currentCommand.id, result.accuracyScore);
     if (result.accuracyScore >= 85) {
       confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.65 }
+        particleCount: 25,
+        spread: 45,
+        origin: { y: 0.7 },
+        decay: 0.92,
+        ticks: 80,
+        scalar: 0.8,
+        gravity: 1.2,
+        disableForReducedMotion: true
       });
     }
   };
@@ -260,9 +270,14 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
     const chosen = currentScenario.options.find(o => o.id === optionId);
     if (chosen?.isBest) {
       confetti({
-        particleCount: 40,
-        spread: 50,
-        origin: { y: 0.8 }
+        particleCount: 20,
+        spread: 40,
+        origin: { y: 0.8 },
+        decay: 0.92,
+        ticks: 60,
+        scalar: 0.7,
+        gravity: 1.2,
+        disableForReducedMotion: true
       });
     }
   };
@@ -274,7 +289,7 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
   };
 
   return (
-    <div className="space-y-10 max-w-7xl mx-auto pb-16">
+    <div className="space-y-10 max-w-5xl mx-auto pb-16">
       {/* Top Section Header */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-xs space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">
