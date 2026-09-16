@@ -1,0 +1,15 @@
+Em gửi thầy vài điểm cần sửa trong web ạ.
+Background của web còn đơn điệu, thầy có thể lồng vài bông hoa hướng dương hoạt hình hoặc nền vàng nhẹ ạ
+Sau mỗi câu lệnh thầy kèm phiên âm IPA và nghĩa tiếng việt cho giáo viên hiểu ạ. Ngoài ra thầy giúp em thêm nút chỉnh tốc độ cho các câu, nhanh hoặc chậm hơn tùy theo khả năng học tập của từng cô ạ. Ví dụ như hình sau. 
+Thầy giúp em chỉnh câu này  thành Together We Learn – Together We Shine ( Cùng nhau học tập – Cùng nhau tỏa sáng)
+Em vẫn chưa hiểu ý đồ các thanh công cụ này là gì ạ? Khi em kích vào thì không hoạt động được ạ
+Ở giao diện chính thầy thêm một tí vào chỗ này giúp em ạ. 
+Mỗi giáo viên là một bông hoa hướng dương luôn rực rỡ, tự tin trao đổi và lan tỏa môi trường Tiếng Anh tự nhiên tới các em học sinh thân yêu.
+7. Thêm giúp em công cụ Vận Hành & Lưu Ý Kỹ Thuật Khi Sử Dụng Trên Điện Thoại
+📱 LƯU Ý KỸ THUẬT QUAN TRỌNG KHI TRUY CẬP BẰNG ĐIỆN THOẠI DI ĐỘNG
+Khi thầy cô nhận đường link Web App qua Zalo/Facebook trên điện thoại, vui lòng thực hiện thao tác:
+1. Nhấn giữ vào đường link Web App.
+2. Chọn 'Mở bằng trình duyệt' (Open in Browser — Chrome / Safari).
+Lý do: 
+Trình duyệt web chuẩn sẽ cấp quyền Micro toàn diện giúp tính năng ghi âm và phân tích phát âm  AI hoạt động mượt mà, không bị chặn tính năng âm thanh.
+Phần bên dưới này em thấy trang web của cô Bình được thiết kế rất kì công và hữu ích. Ví dụ như cô cung cấp được flashcard 3D cho giáo viên tải file PDF về để in ra nếu cần thiết, phòng luyện giọng và sắc thái của cô cũng rất rõ ràng. Em nhờ thầy nghiên cứu chỗ này giúp em với ạ, mình có thể học hỏi được không ạ?

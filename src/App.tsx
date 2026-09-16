@@ -33,6 +33,15 @@ import {
   TeacherProfileModal 
 } from './components/TeacherProfileModal';
 import { 
+  Footer 
+} from './components/Footer';
+import { 
+  MobileNoticeModal 
+} from './components/MobileNoticeModal';
+import { 
+  FlashcardModal 
+} from './components/FlashcardModal';
+import { 
   ALL_APP_COMMANDS 
 } from './data/commandsData';
 import { 
@@ -57,6 +66,8 @@ export default function App() {
   const [posts, setPosts] = useState<CommunityPost[]>(loadCommunityPosts);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [isMobileNoticeOpen, setIsMobileNoticeOpen] = useState(false);
+  const [isFlashcardOpen, setIsFlashcardOpen] = useState(false);
   const [learningHistory, setLearningHistory] = useState<LearningHistoryEntry[]>(loadLearningHistory);
 
   // Helper to add a history entry
@@ -219,37 +230,9 @@ export default function App() {
     });
   };
 
-  // Add new forum post
-  const handleAddPost = (newPostData: Omit<CommunityPost, 'id' | 'likes' | 'hasLiked' | 'timestamp'>) => {
-    const newPost: CommunityPost = {
-      ...newPostData,
-      id: `post-${Date.now()}`,
-      likes: 1,
-      hasLiked: true,
-      timestamp: 'Vừa xong'
-    };
-    setPosts(prev => [newPost, ...prev]);
-  };
-
-  // Toggle like post
-  const handleToggleLikePost = (postId: string) => {
-    setPosts(prev =>
-      prev.map(p => {
-        if (p.id === postId) {
-          const hasLiked = !p.hasLiked;
-          return {
-            ...p,
-            hasLiked,
-            likes: hasLiked ? p.likes + 1 : Math.max(0, p.likes - 1)
-          };
-        }
-        return p;
-      })
-    );
-  };
-
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAFA] text-[#222222] pb-20 sm:pb-12">
+    <div className="min-h-screen flex flex-col bg-[#FFFDF5] text-slate-900 sunflower-bg-pattern relative">
+      
       {/* Sticky Top Navigation with Sunflower theme */}
       <Navbar
         activeTab={activeTab}
@@ -257,6 +240,8 @@ export default function App() {
         progress={progress}
         onOpenProfileModal={() => setIsProfileModalOpen(true)}
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
+        onOpenMobileNotice={() => setIsMobileNoticeOpen(true)}
+        onOpenFlashcard={() => setIsFlashcardOpen(true)}
       />
 
       {/* Main Tab Content Viewport */}
@@ -268,6 +253,8 @@ export default function App() {
             learningHistory={learningHistory}
             onNavigateTab={handleNavigateTab}
             onToggleBookmark={handleToggleBookmark}
+            onOpenMobileNotice={() => setIsMobileNoticeOpen(true)}
+            onOpenFlashcard={() => setIsFlashcardOpen(true)}
           />
         )}
 
@@ -314,7 +301,6 @@ export default function App() {
           />
         )}
 
-
       </main>
 
       {/* Mini Floating Dock điều hành lớp học trực tiếp trên bục giảng */}
@@ -334,13 +320,25 @@ export default function App() {
         onClose={() => setIsApiKeyModalOpen(false)}
       />
 
-      {/* Footer — Vocabdaily.lklschool */}
-      <footer className="bg-white border-t border-gray-200 mt-12 no-print">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 text-center text-[11px] text-[#aaa] font-medium">
-          English in the Classroom — Le Kim Lang Primary School 2026–2027 🌻
-        </div>
-      </footer>
+      {/* Mobile Notice Modal for Zalo/Facebook */}
+      <MobileNoticeModal
+        isOpen={isMobileNoticeOpen}
+        onClose={() => setIsMobileNoticeOpen(false)}
+      />
+
+      {/* Flashcard 3D Interactive & PDF Print Modal */}
+      <FlashcardModal
+        isOpen={isFlashcardOpen}
+        onClose={() => setIsFlashcardOpen(false)}
+        commands={ALL_APP_COMMANDS}
+      />
+
+      {/* Professional Footer inspired by cô Bình reference app */}
+      <Footer 
+        onNavigateTab={handleNavigateTab} 
+        onOpenMobileNotice={() => setIsMobileNoticeOpen(true)}
+        onOpenFlashcard={() => setIsFlashcardOpen(true)}
+      />
     </div>
   );
 }
-

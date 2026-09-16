@@ -82,6 +82,13 @@ const TONES: {
   }
 ];
 
+export const TONE_NAMES: Record<PedagogicalTone, string> = {
+  energetic: 'Vui Tươi & Hào Hứng',
+  strict_gentle: 'Nghiêm Túc & Dịu Dàng',
+  calm_whisper: 'Thì Thầm & Xoa Dịu',
+  rhythm_chant: 'Vần Điệu Nhịp Nhàng'
+};
+
 export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
   commands,
   initialCommandId,
@@ -137,14 +144,20 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
   }, []);
 
   // Handle Model Voice Sample
-  const handlePlayModelAudio = (rate: number = 1.0) => {
+  const handlePlayModelAudio = (rate: number = 1.0, toneToPlay?: PedagogicalTone) => {
     stopSpeaking();
     setIsPlayingModel(true);
     speakText(currentCommand.teacherCall, {
       rate,
-      tone: selectedTone,
+      tone: toneToPlay || selectedTone,
       onEnd: () => setIsPlayingModel(false)
     });
+  };
+
+  // When user clicks a tone: select AND immediately speak to demonstrate it
+  const handleSelectTone = (toneId: PedagogicalTone) => {
+    setSelectedTone(toneId);
+    handlePlayModelAudio(1.0, toneId);
   };
 
   // Start Voice AI Recording
@@ -382,10 +395,13 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
 
         {/* 4 Pedagogical Tones Selection */}
         <div className="space-y-3">
-          <div className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
-            <span>Chọn 1 trong 4 sắc thái biểu cảm sư phạm:</span>
-            <span className="text-blue-600 font-semibold normal-case">
-              Gợi ý tối ưu cho câu này: <strong>{currentCommand.toneRecommendation}</strong>
+          <div className="text-xs font-bold text-slate-700 uppercase tracking-wider flex flex-wrap items-center justify-between gap-2">
+            <span className="flex items-center gap-1.5">
+              <span>🎭</span>
+              <span>Chọn 1 trong 4 sắc thái biểu cảm sư phạm:</span>
+            </span>
+            <span className="text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200 text-xs font-semibold normal-case">
+              Gợi ý tối ưu cho câu này: <strong>{TONE_NAMES[currentCommand.toneRecommendation] || currentCommand.toneRecommendation}</strong>
             </span>
           </div>
 
@@ -396,23 +412,26 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
               return (
                 <button
                   key={tone.id}
-                  onClick={() => setSelectedTone(tone.id)}
+                  onClick={() => handleSelectTone(tone.id)}
                   id={`tone-btn-${tone.id}`}
-                  className={`p-3.5 rounded-2xl border text-left transition-all ${
+                  className={`p-3.5 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer ${
                     isSelected
-                      ? `${tone.borderActive} shadow-xs ring-2 ring-blue-400/30`
+                      ? `${tone.borderActive} shadow-sm ring-2 ring-blue-400/40`
                       : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                   }`}
+                  title={`Bấm để chọn và nghe thử ngay giọng mẫu theo sắc thái "${tone.label}"`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSelected ? 'bg-white shadow-2xs' : 'bg-slate-100'}`}>
                       <Icon className="w-4 h-4 text-slate-700" />
                     </div>
-                    {isSelected && (
-                      <span className="text-[10px] font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">
-                        Đang chọn
-                      </span>
-                    )}
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      isSelected 
+                        ? 'text-blue-700 bg-blue-100 font-black' 
+                        : 'text-slate-400 group-hover:text-blue-600 bg-slate-50'
+                    }`}>
+                      {isSelected ? '🔊 Đang chọn' : 'Bấm nghe thử'}
+                    </span>
                   </div>
                   <div className="text-xs font-bold text-slate-900 leading-tight">
                     {tone.label}
@@ -424,6 +443,17 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
               );
             })}
           </div>
+
+          {/* Pedagogical Explanation Box */}
+          <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-3 sm:p-4 text-xs text-slate-700 space-y-1.5">
+            <div className="font-bold text-amber-900 flex items-center gap-1.5">
+              <span>💡</span>
+              <span>Ý đồ sư phạm của 4 sắc thái biểu cảm:</span>
+            </div>
+            <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed">
+              Cùng một câu khẩu lệnh, giáo viên đổi ngữ điệu (cao độ, nhịp điệu) sẽ đạt hiệu quả điều phối lớp học khác nhau: <strong className="text-slate-800">Vui tươi</strong> khi chơi game; <strong className="text-slate-800">Nghiêm túc</strong> khi giữ trật tự kỷ luật tích cực; <strong className="text-slate-800">Thì thầm</strong> để dập tắt ồn ào; và <strong className="text-slate-800">Vần điệu</strong> khi đọc vè, đồng dao. Thầy cô bấm vào từng ô trên để nghe AI phát âm mẫu tương ứng nhé!
+            </p>
+          </div>
         </div>
 
         {/* Listen Model & Recording Controls */}
@@ -434,19 +464,19 @@ export const VoiceLabTab: React.FC<VoiceLabTabProps> = ({
               <button
                 onClick={() => handlePlayModelAudio(1.0)}
                 disabled={isPlayingModel}
-                className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-2xs w-full sm:w-auto disabled:opacity-50"
+                className="px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs w-full sm:w-auto disabled:opacity-50"
               >
-                <Play className={`w-4 h-4 text-blue-600 ${isPlayingModel ? 'animate-spin' : ''}`} />
-                <span>Nghe giọng mẫu ({selectedTone})</span>
+                <Play className={`w-4 h-4 text-amber-300 ${isPlayingModel ? 'animate-spin' : ''}`} />
+                <span>Nghe giọng mẫu ({TONE_NAMES[selectedTone]}) (1.0x)</span>
               </button>
 
               <button
                 onClick={() => handlePlayModelAudio(0.7)}
                 disabled={isPlayingModel}
-                className="px-3 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 text-xs font-bold transition-all disabled:opacity-50"
+                className="px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold transition-all disabled:opacity-50"
                 title="Nghe mẫu chậm 0.7x"
               >
-                0.7x
+                0.7x chậm
               </button>
             </div>
 
