@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, Mic, Sparkles, Smartphone, Layers, Search, Filter } from 'lucide-react';
+import { Volume2, Mic, Sparkles, Search } from 'lucide-react';
 import { UserProgress, LearningHistoryEntry, VocabCategory } from '../types';
 import { speakText, stopSpeaking } from '../utils/speech';
 import { 
@@ -22,8 +22,6 @@ interface DashboardTabProps {
 export const DashboardTab: React.FC<DashboardTabProps> = ({
   progress,
   onNavigateTab,
-  onOpenMobileNotice,
-  onOpenFlashcard
 }) => {
   const [activeCategory, setActiveCategory] = useState<VocabCategory>('Greeting & Starting');
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -196,29 +194,6 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               </p>
             </div>
           </div>
-        </div>
-
-        {/* Quick action bar: Mobile notice & 3D Flashcard */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
-          {onOpenFlashcard && (
-            <button
-              onClick={onOpenFlashcard}
-              className="px-3.5 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 border border-teal-300 text-teal-800 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all"
-            >
-              <Layers className="w-3.5 h-3.5 text-teal-600" />
-              <span>🃏 Mở Flashcard 3D & In PDF</span>
-            </button>
-          )}
-
-          {onOpenMobileNotice && (
-            <button
-              onClick={onOpenMobileNotice}
-              className="px-3.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-800 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all"
-            >
-              <Smartphone className="w-3.5 h-3.5 text-amber-600" />
-              <span>📱 Lưu ý mở trên Zalo/Điện thoại</span>
-            </button>
-          )}
         </div>
       </div>
 
