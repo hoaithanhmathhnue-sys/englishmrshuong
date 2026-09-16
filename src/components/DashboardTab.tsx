@@ -172,10 +172,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           Vocabdaily
         </h1>
 
-        {/* Updated Slogan from docx: Together We Learn – Together We Shine */}
+        {/* Updated Slogan */}
         <p className="text-xs sm:text-sm font-bold text-amber-700 max-w-xl mx-auto">
-          "Together We Learn – Together We Shine" <br className="sm:hidden" />
-          <span className="text-slate-600 font-semibold">(Cùng nhau học tập – Cùng nhau tỏa sáng)</span>
+          "Together we learn – together we shine" <br className="sm:hidden" />
+          <span className="text-slate-600 font-semibold">(Cùng nhau học tập – cùng nhau tỏa sáng)</span>
         </p>
 
         {/* ═══ INSPIRING QUOTE (Image 4 from docx) ═══ */}

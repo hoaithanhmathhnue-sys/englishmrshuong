@@ -285,7 +285,7 @@ export const FlashcardModal: React.FC<FlashcardModalProps> = ({
             CLB Tiếng Anh Giáo Viên Tiểu Học — Bộ Thẻ Flashcard Khẩu Lệnh Lớp Học
           </h1>
           <p className="text-sm italic mt-1">
-            "Together We Learn – Together We Shine" • Tiêu chuẩn K-5 Bộ Giáo dục & Đào tạo
+            "Together we learn – together we shine" • Tiêu chuẩn K-5 Bộ Giáo dục & Đào tạo
           </p>
         </div>
 
