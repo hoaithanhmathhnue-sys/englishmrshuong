@@ -56,7 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-3 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-16 gap-3">
           
-          {/* Left: Logo — 🌻 Vocabdaily | lklschool */}
+          {/* Left: Logo — 🌻 Vocabdaily | lklprimaryschool */}
           <div 
             onClick={() => setActiveTab('dashboard')}
             className="flex items-center gap-2 cursor-pointer group select-none shrink-0"
@@ -70,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Vocabdaily
               </span>
               <span className="text-[10px] sm:text-[11px] text-amber-600 font-bold leading-tight block whitespace-nowrap">
-                lklschool
+                lklprimaryschool
               </span>
             </div>
           </div>

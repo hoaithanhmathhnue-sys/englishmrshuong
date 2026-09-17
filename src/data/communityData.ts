@@ -3,8 +3,8 @@ import { CommunityPost } from '../types';
 export const INITIAL_COMMUNITY_POSTS: CommunityPost[] = [
   {
     id: 'post-1',
-    authorName: 'Cô Nguyễn Thu Hà',
-    school: 'Trường Tiểu học Chu Văn An, Hà Nội',
+    authorName: 'Cô Cù Thị Mỹ Dung',
+    school: 'Trường Tiểu học Lê Kim Lăng',
     avatarColor: 'bg-emerald-500',
     gradeTag: 'Lớp 1 & 2',
     hashtags: ['#Lớp1', '#KỷLuậtTíchCực', '#TPR'],

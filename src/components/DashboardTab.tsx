@@ -42,9 +42,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   const handleListen = (phrase: VocabPhrase, rate: number = 1.0) => {
     stopSpeaking();
     setPlayingId(`${phrase.id}-${rate}`);
+    // Làm sạch ký tự gạch chéo để phát âm tự nhiên
+    const cleanPhrase = phrase.phrase.replace(/\/ -|\/-|\//g, '. ');
     const text = phrase.response 
-      ? `${phrase.phrase}. ${phrase.response}` 
-      : phrase.phrase;
+      ? `${cleanPhrase}. ${phrase.response}` 
+      : cleanPhrase;
     speakText(text, {
       rate,
       onEnd: () => setPlayingId(null)
@@ -98,44 +100,40 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
 
         {/* Pedagogical context / situation */}
-        {phrase.context && (
-          <p className="text-xs text-slate-600 leading-relaxed bg-amber-50/40 p-2.5 rounded-xl border border-amber-100">
-            {phrase.context}
-          </p>
-        )}
+        <p className="text-xs text-slate-600 bg-amber-50/50 p-2.5 rounded-xl border border-amber-100 italic leading-relaxed">
+          💡 <span className="font-semibold text-amber-900 not-italic">Ngữ cảnh:</span> {phrase.context}
+        </p>
 
-        {/* Bottom Audio & Action Buttons — exact design as Image 1 */}
-        <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-amber-100">
-          {/* 1.0x Normal Audio Button */}
+        {/* Bottom bar: Audio buttons + Voice lab shortcut */}
+        <div className="pt-2 border-t border-amber-100 flex items-center gap-2">
+          {/* Normal speed */}
           <button
             onClick={() => handleListen(phrase, 1.0)}
-            disabled={isPlayingNormal || isPlayingSlow}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-xs ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
               isPlayingNormal
-                ? 'bg-teal-800 text-white animate-pulse'
-                : 'bg-teal-700 hover:bg-teal-800 text-white'
+                ? 'bg-amber-400 text-slate-900 shadow-sm scale-105'
+                : 'bg-amber-100 text-amber-900 hover:bg-amber-200'
             }`}
-            title="Phát âm chuẩn tốc độ 1.0x"
+            title="Nghe phát âm chuẩn (Tốc độ 1.0x)"
           >
             <Volume2 className="w-3.5 h-3.5" />
-            <span>Phát âm chuẩn (1.0x)</span>
+            <span>Nghe 1.0x</span>
           </button>
 
-          {/* 0.7x Slow Audio Button */}
+          {/* Slow speed for K-5 learners */}
           <button
             onClick={() => handleListen(phrase, 0.7)}
-            disabled={isPlayingNormal || isPlayingSlow}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all ${
               isPlayingSlow
-                ? 'bg-amber-100 border-amber-400 text-amber-900'
-                : 'bg-white hover:bg-slate-50 border-slate-300 text-slate-700'
+                ? 'bg-teal-400 text-slate-900 shadow-sm scale-105'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
-            title="Phát chậm rõ từng âm 0.7x"
+            title="Nghe chậm rõ từng âm (Tốc độ 0.7x)"
           >
-            <span>🔄 Phát chậm rõ từ (0.7x)</span>
+            <span>🐢 0.7x</span>
           </button>
 
-          {/* Practice in VoiceLab Button */}
+          {/* Shortcut to Voice AI Lab */}
           <button
             onClick={() => onNavigateTab('voicelab', phrase.id)}
             className="ml-auto px-3 py-2 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-1.5 transition-colors"
@@ -155,11 +153,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       {/* ═══ HERO — Sunflower & Slogan ═══ */}
       <div className="text-center py-2 space-y-2 relative">
         
-        {/* Floating decorative cartoon sunflowers */}
-        <div className="hidden sm:block absolute -left-4 top-2 text-4xl select-none animate-float-sunflower pointer-events-none opacity-80">
+        {/* Floating decorative cartoon sunflowers - To hơn & rực rỡ nổi bật */}
+        <div className="absolute -left-2 sm:-left-12 lg:-left-16 -top-3 sm:-top-2 text-6xl sm:text-7xl lg:text-8xl select-none animate-float-sunflower pointer-events-none opacity-95 drop-shadow-lg">
           🌻
         </div>
-        <div className="hidden sm:block absolute -right-4 top-4 text-4xl select-none animate-float-sunflower-reverse pointer-events-none opacity-80">
+        <div className="absolute -right-2 sm:-right-12 lg:-right-16 -top-1 sm:top-0 text-6xl sm:text-7xl lg:text-8xl select-none animate-float-sunflower-reverse pointer-events-none opacity-95 drop-shadow-lg">
           🌻
         </div>
 
@@ -169,7 +167,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         </div>
 
         <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-          Vocabdaily
+          <span className="text-amber-500">vocabdaily</span>.lklprimaryschool
         </h1>
 
         {/* Updated Slogan */}

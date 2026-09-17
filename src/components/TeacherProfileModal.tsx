@@ -78,7 +78,7 @@ export const TeacherProfileModal: React.FC<TeacherProfileModalProps> = ({
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ví dụ: Cô Nguyễn Thu Hà"
+                placeholder="Ví dụ: Cô Cù Thị Mỹ Dung"
                 className="w-full pl-9 pr-3 py-2.5 text-xs font-medium rounded-xl border border-slate-300 focus:outline-hidden focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
             </div>

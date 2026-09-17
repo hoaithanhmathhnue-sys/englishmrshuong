@@ -444,14 +444,247 @@ INITIAL_COMMANDS.slice(0, 10).forEach(cmd => {
   cmd.isMonthlyRequired = true;
 });
 
-// Toàn bộ thư viện câu lệnh tích hợp đầy đủ K-5, Môn Toán và Đồng nghiệp (Tổng 52 câu)
+// 12 câu Daily Communication: Teacher - Students theo ảnh đề án trường
+export const DAILY_COMMUNICATION_APP_COMMANDS: CommandItem[] = [
+  {
+    id: 'cmd-dc-01',
+    teacherCall: 'Do you understand?',
+    studentResponse: 'Yes, I do! / Not yet.',
+    callIpa: '/duː juː ˌʌndəˈstænd/',
+    responseIpa: '/jes, aɪ duː/',
+    vietnameseTranslation: 'Các con có hiểu bài không? -> Dạ chúng con hiểu rồi ạ / Dạ chưa ạ.',
+    context: 'Kiểm tra mức độ tiếp thu bài của học sinh trước khi chuyển sang nội dung mới.',
+    gradeLevel: 'All',
+    category: 'Hỏi - Đáp',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Nghiêng đầu nhẹ, hai tay mở rộng hướng về học sinh thăm dò.',
+      studentAction: 'Gật đầu tự tin hoặc giơ tay nếu cần cô giải thích lại.',
+      iconTip: '🤔 Nghiêng đầu thăm dò'
+    },
+    toneRecommendation: 'calm_whisper',
+    audioSampleNotes: 'Giọng ân cần, lên giọng ở cuối câu hỏi.'
+  },
+  {
+    id: 'cmd-dc-02',
+    teacherCall: 'Can you repeat?',
+    studentResponse: 'Yes, teacher!',
+    callIpa: '/kæn juː rɪˈpiːt/',
+    responseIpa: '/jes, ˈtiːtʃər/',
+    vietnameseTranslation: 'Con có thể nhắc lại câu đó được không? -> Dạ được ạ.',
+    context: 'Khuyến khích học sinh lặp lại câu vừa nghe để luyện phát âm và ngữ điệu.',
+    gradeLevel: 'All',
+    category: 'Hỏi - Đáp',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Khum nhẹ bàn tay bên tai ra hiệu lắng nghe.',
+      studentAction: 'Đứng dậy hoặc ngồi thẳng nhắc lại rõ ràng.',
+      iconTip: '🔁 Khum tay lắng nghe'
+    },
+    toneRecommendation: 'strict_gentle',
+    audioSampleNotes: 'Nhẹ nhàng, khuyến khích sự tự tin.'
+  },
+  {
+    id: 'cmd-dc-03',
+    teacherCall: 'Anything else?',
+    studentResponse: "That's all, teacher! / One more idea!",
+    callIpa: '/ˈeniθɪŋ els/',
+    responseIpa: '/ðæts ɔːl, ˈtiːtʃər/',
+    vietnameseTranslation: 'Còn gì nữa không nào các con? / Có ai bổ sung thêm không? -> Dạ hết rồi ạ cô!',
+    context: 'Mở rộng câu trả lời, khơi gợi học sinh tư duy sâu hơn.',
+    gradeLevel: 'All',
+    category: 'Hỏi - Đáp',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Hai bàn tay mở ngửa ra phía trước đón nhận ý kiến mới.',
+      studentAction: 'Giơ tay nếu muốn bổ sung ý tưởng.',
+      iconTip: '➕ Mở tay đón nhận'
+    },
+    toneRecommendation: 'energetic',
+    audioSampleNotes: 'Hào hứng, kích thích sự tò mò.'
+  },
+  {
+    id: 'cmd-dc-04',
+    teacherCall: 'Who else?',
+    studentResponse: 'Me, teacher! / Let me try!',
+    callIpa: '/huː els/',
+    responseIpa: '/miː, ˈtiːtʃər/',
+    vietnameseTranslation: 'Còn ai khác nữa không nào? / Ai xung phong nào? -> Em thưa cô/thầy!',
+    context: 'Kêu gọi tinh thần xung phong từ các học sinh nhút nhát hoặc chưa phát biểu.',
+    gradeLevel: 'All',
+    category: 'Hỏi - Đáp',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Mỉm cười đảo mắt nhìn khắp lớp, đưa tay mời gọi.',
+      studentAction: 'Hào hứng giơ tay "Me, teacher!".',
+      iconTip: '🙋‍♂️ Mời gọi xung phong'
+    },
+    toneRecommendation: 'energetic',
+    audioSampleNotes: 'Ấm áp, thân thiện, tạo sự khích lệ.'
+  },
+  {
+    id: 'cmd-dc-05',
+    teacherCall: 'Can you say it in English?',
+    studentResponse: 'Yes, I can!',
+    callIpa: '/kæn juː seɪ ɪt ɪn ˈɪŋɡlɪʃ/',
+    responseIpa: '/jes, aɪ kæn/',
+    vietnameseTranslation: 'Con có thể nói câu đó bằng tiếng Anh được không? -> Dạ được ạ!',
+    context: 'Nhắc nhở nhẹ nhàng giúp học sinh chuyển sang giao tiếp bằng tiếng Anh trong lớp.',
+    gradeLevel: 'All',
+    category: 'Hỏi - Đáp',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Trỏ nhẹ ngón tay vào tai và miệng mỉm cười động viên.',
+      studentAction: 'Tự tin dịch câu vừa nói sang tiếng Anh.',
+      iconTip: '🇬🇧 Động viên nói tiếng Anh'
+    },
+    toneRecommendation: 'strict_gentle',
+    audioSampleNotes: 'Ngọt ngào, không gây áp lực cho học sinh.'
+  },
+  {
+    id: 'cmd-dc-06',
+    teacherCall: 'What do you think?',
+    studentResponse: 'I think it is great! / I agree.',
+    callIpa: '/wɒt duː juː θɪŋk/',
+    responseIpa: '/aɪ θɪŋk ɪt ɪz ɡreɪt/',
+    vietnameseTranslation: 'Con nghĩ thế nào về điều này? -> Con nghĩ điều này thật tuyệt vời!',
+    context: 'Rèn luyện thói quen tự suy nghĩ, bày tỏ chính kiến và tư duy phản biện.',
+    gradeLevel: 'All',
+    category: 'Hỏi - Đáp',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Đặt ngón trỏ lên thái dương suy nghĩ rồi hướng về học sinh.',
+      studentAction: 'Học sinh trình bày suy nghĩ của mình.',
+      iconTip: '🧠 Đặt tay lên thái dương'
+    },
+    toneRecommendation: 'calm_whisper',
+    audioSampleNotes: 'Trầm ấm, khuyến khích suy ngẫm.'
+  },
+  {
+    id: 'cmd-dc-07',
+    teacherCall: "Thank you so much/-You're welcome.",
+    studentResponse: "You're welcome!",
+    callIpa: '/θæŋk juː səʊ mʌtʃ/',
+    responseIpa: '/jɔː ˈwelkəm/',
+    vietnameseTranslation: 'Cảm ơn con rất nhiều! -> Dạ không có gì ạ!',
+    context: 'Xây dựng văn hóa giao tiếp biết ơn và đáp lời lễ phép, thân thiện trong trường học.',
+    gradeLevel: 'All',
+    category: 'Hỏi - Đáp',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Đặt một bàn tay lên ngực trái gật đầu cảm ơn.',
+      studentAction: 'Khoanh tay mỉm cười "You are welcome!".',
+      iconTip: '💐 Đặt tay lên ngực'
+    },
+    toneRecommendation: 'strict_gentle',
+    audioSampleNotes: 'Ân cần, ấm áp và chân thành.'
+  },
+  {
+    id: 'cmd-dc-08',
+    teacherCall: 'Look at the board, please!',
+    studentResponse: 'Eyes on the board, teacher!',
+    callIpa: '/lʊk æt ðə bɔːd, pliːz/',
+    responseIpa: '/aɪz ɒn ðə bɔːd, ˈtiːtʃər/',
+    vietnameseTranslation: 'Xin cả lớp hãy nhìn lên bảng nào! -> Mắt nhìn lên bảng ạ!',
+    context: 'Kéo toàn bộ sự tập trung của học sinh về phía bài giảng trên bảng lớp.',
+    gradeLevel: 'All',
+    category: 'Ổn định & Chú ý',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Chỉ hai ngón tay hướng dứt khoát về phía bảng.',
+      studentAction: 'Ngồi thẳng lưng, hướng ánh mắt lên bảng đen.',
+      iconTip: '👀 Chỉ tay lên bảng'
+    },
+    toneRecommendation: 'strict_gentle',
+    audioSampleNotes: 'Dõng dạc, rõ ràng, dứt khoát.'
+  },
+  {
+    id: 'cmd-dc-09',
+    teacherCall: 'Come in, please!',
+    studentResponse: 'Thank you, teacher!',
+    callIpa: '/kʌm ɪn, pliːz/',
+    responseIpa: '/θæŋk juː, ˈtiːtʃər/',
+    vietnameseTranslation: 'Mời em vào lớp! -> Em cảm ơn cô/thầy ạ!',
+    context: 'Cho phép học sinh vào lớp học một cách lịch sự, ấm áp.',
+    gradeLevel: 'All',
+    category: 'Hỏi - Đáp',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Vẫy nhẹ bàn tay hướng vào trong lớp.',
+      studentAction: 'Bước nhẹ nhàng vào chỗ ngồi trật tự.',
+      iconTip: '🚪 Vẫy tay mời vào'
+    },
+    toneRecommendation: 'strict_gentle',
+    audioSampleNotes: 'Âm sắc ấm áp, chào đón.'
+  },
+  {
+    id: 'cmd-dc-10',
+    teacherCall: 'One voice, please!',
+    studentResponse: 'Listening ears on! Shhh...',
+    callIpa: '/wʌn vɔɪs, pliːz/',
+    responseIpa: '/ˈlɪsnɪŋ ɪəz ɒn, ʃʃʃ.../',
+    vietnameseTranslation: 'Giữ trật tự, chỉ một người nói thôi nhé! -> Đôi tai lắng nghe, suỵt...',
+    context: 'Quản lý trật tự lớp khi thảo luận quá sôi nổi, tôn trọng người đang phát biểu.',
+    gradeLevel: 'All',
+    category: 'Ổn định & Chú ý',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Giơ 1 ngón trỏ lên cao rồi khẽ đặt lên môi.',
+      studentAction: 'Dừng nói chuyện và chăm chú lắng nghe bạn đang phát biểu.',
+      iconTip: '🤫 Giơ 1 ngón tay lên môi'
+    },
+    toneRecommendation: 'strict_gentle',
+    audioSampleNotes: 'Điềm tĩnh, uy lực nhẹ nhàng.'
+  },
+  {
+    id: 'cmd-dc-11',
+    teacherCall: 'Pay attention, please!',
+    studentResponse: 'Yes, teacher! We are ready!',
+    callIpa: '/peɪ əˈtenʃn, pliːz/',
+    responseIpa: '/jes, ˈtiːtʃər! wiː ɑːr ˈredi/',
+    vietnameseTranslation: 'Xin cả lớp hãy chú ý! / Tập trung nào các con! -> Dạ vâng, chúng con sẵn sàng rồi ạ!',
+    context: 'Thu hút sự chú ý khi chuyển phần bài giảng hoặc thông báo quan trọng.',
+    gradeLevel: 'All',
+    category: 'Ổn định & Chú ý',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Vỗ tay 2 nhịp rồi đứng nghiêm trang nhìn quanh lớp.',
+      studentAction: 'Ngồi ngay ngắn, hai tay để lên bàn.',
+      iconTip: '📢 Vỗ tay 2 nhịp chú ý'
+    },
+    toneRecommendation: 'energetic',
+    audioSampleNotes: 'Dứt khoát, âm vực cao vừa phải, truyền cảm hứng.'
+  },
+  {
+    id: 'cmd-dc-12',
+    teacherCall: 'Have you finished?',
+    studentResponse: 'Yes, I have! / Not yet, teacher!',
+    callIpa: '/hæv juː ˈfɪnɪʃt/',
+    responseIpa: '/jes, aɪ hæv/',
+    vietnameseTranslation: 'Các con đã làm xong bài chưa? -> Dạ xong rồi ạ / Dạ chưa ạ!',
+    context: 'Kiểm tra tốc độ hoàn thành bài tập của cả lớp để chuyển hoạt động.',
+    gradeLevel: 'All',
+    category: 'Hỏi - Đáp',
+    vocabCategory: 'Daily Communication',
+    tprCue: {
+      teacherAction: 'Chỉ tay vào đồng hồ hoặc giơ hai tay hỏi han.',
+      studentAction: 'Giơ ngón cái (Thumbs up) nếu đã xong, hoặc tiếp tục viết nếu chưa xong.',
+      iconTip: '⏱️ Thăm dò tiến độ'
+    },
+    toneRecommendation: 'energetic',
+    audioSampleNotes: 'Hào hứng, tạo nhịp độ học tập nhanh nhẹn.'
+  }
+];
+
+// Toàn bộ thư viện câu lệnh tích hợp đầy đủ K-5, Môn Toán, Đồng nghiệp và Daily Communication
 export const ALL_APP_COMMANDS: CommandItem[] = [
   ...INITIAL_COMMANDS,
+  ...DAILY_COMMUNICATION_APP_COMMANDS,
   ...MATH_COMMANDS,
   ...COLLEAGUE_COMMANDS
 ];
 
-// === Vocabdaily.lklschool: Mapping 4 nhóm chính theo DOCX ===
+// === vocabdaily.lklprimaryschool: Mapping 4 nhóm chính theo DOCX ===
 const VOCAB_CATEGORY_MAP: Record<string, VocabCategory> = {
   // 🌅 Greeting & Starting — Chào hỏi, khởi động, tạo năng lượng đầu tiết
   'cmd-07': 'Greeting & Starting',   // Are you ready?
@@ -493,6 +726,11 @@ MATH_COMMANDS.forEach(cmd => {
 
 // Colleague commands → Daily Communication
 COLLEAGUE_COMMANDS.forEach(cmd => {
+  VOCAB_CATEGORY_MAP[cmd.id] = 'Daily Communication';
+});
+
+// Daily communication Teacher-Students commands → Daily Communication
+DAILY_COMMUNICATION_APP_COMMANDS.forEach(cmd => {
   VOCAB_CATEGORY_MAP[cmd.id] = 'Daily Communication';
 });
 

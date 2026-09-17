@@ -474,7 +474,7 @@ const DAILY_TEACHER_STUDENTS: VocabPhrase[] = [
     phrase: 'Do you understand?', 
     response: 'Yes, I do / Not yet',
     ipa: '/duː juː ˌʌndəˈstænd/ -> /jes, aɪ duː/',
-    vietnamese: 'Các con có hiểu bài không? -> Dạ chúng con hiểu rồi ạ.',
+    vietnamese: 'Các con có hiểu bài không? -> Dạ chúng con hiểu rồi ạ / Dạ chưa ạ.',
     context: 'Kiểm tra mức độ tiếp thu bài của học sinh trước khi chuyển phần mới.',
     emoji: '🤔', 
     vocabCategory: 'Daily Communication', 
@@ -483,9 +483,10 @@ const DAILY_TEACHER_STUDENTS: VocabPhrase[] = [
   },
   { 
     id: 'dc-02', 
-    phrase: 'Can you repeat that?', 
-    ipa: '/kæn juː rɪˈpiːt ðæt/',
-    vietnamese: 'Con có thể nhắc lại câu đó được không?',
+    phrase: 'Can you repeat?', 
+    response: 'Yes, teacher!',
+    ipa: '/kæn juː rɪˈpiːt/ -> /jes, ˈtiːtʃər/',
+    vietnamese: 'Con có thể nhắc lại câu đó được không? -> Dạ được ạ.',
     context: 'Yêu cầu học sinh nhắc lại câu vừa nói để rèn luyện phản xạ phát âm.',
     emoji: '🔁', 
     vocabCategory: 'Daily Communication', 
@@ -494,34 +495,36 @@ const DAILY_TEACHER_STUDENTS: VocabPhrase[] = [
   },
   { 
     id: 'dc-03', 
-    phrase: 'What does this word mean?', 
-    ipa: '/wɒt dʌz ðɪs wɜːd miːn/',
-    vietnamese: 'Từ này có nghĩa là gì nhỉ các con?',
-    context: 'Khơi gợi học sinh tư duy giải nghĩa từ theo ngữ cảnh bài học.',
-    emoji: '❓', 
+    phrase: 'Anything else?', 
+    response: "That's all, teacher! / One more idea!",
+    ipa: '/ˈeniθɪŋ els/ -> /ðæts ɔːl, ˈtiːtʃər/',
+    vietnamese: 'Còn gì nữa không nào các con? / Có ai bổ sung gì thêm không?',
+    context: 'Khơi gợi thêm ý kiến, mở rộng câu trả lời của học sinh khi thảo luận hoặc làm bài.',
+    emoji: '➕', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Teacher ↔ Students', 
     order: 3 
   },
   { 
     id: 'dc-04', 
-    phrase: 'Can anyone help?', 
-    ipa: '/kæn ˈeniwʌn help/',
-    vietnamese: 'Có bạn nào giúp đỡ bạn được không nào?',
-    context: 'Kêu gọi tinh thần tương trợ và tinh thần đồng đội giữa các bạn trong lớp.',
-    emoji: '🙋', 
+    phrase: 'Who else?', 
+    response: 'Me, teacher! / Let me try!',
+    ipa: '/huː els/ -> /miː, ˈtiːtʃər/',
+    vietnamese: 'Còn bạn nào nữa không nào? / Ai xung phong nữa nào?',
+    context: 'Kêu gọi thêm các cánh tay khác xung phong tham gia hoạt động lớp học.',
+    emoji: '🙋‍♂️', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Teacher ↔ Students', 
     order: 4 
   },
   { 
     id: 'dc-05', 
-    phrase: 'Any questions?', 
-    response: 'No questions, teacher!',
-    ipa: '/ˈeni ˈkwestʃənz/ -> /nəʊ ˈkwestʃənz, ˈtiːtʃər/',
-    vietnamese: 'Có bạn nào có thắc mắc gì không? -> Dạ không ạ!',
-    context: 'Tạo không gian mở cho học sinh đặt câu hỏi nếu còn điểm chưa rõ.',
-    emoji: '💭', 
+    phrase: 'Can you say it in English?', 
+    response: 'Yes, I can!',
+    ipa: '/kæn juː seɪ ɪt ɪn ˈɪŋɡlɪʃ/ -> /jes, aɪ kæn/',
+    vietnamese: 'Con có thể diễn đạt bằng tiếng Anh được không nào?',
+    context: 'Khích lệ học sinh chuyển ngữ sang tiếng Anh tự nhiên trong giờ học.',
+    emoji: '🇬🇧', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Teacher ↔ Students', 
     order: 5 
@@ -529,8 +532,9 @@ const DAILY_TEACHER_STUDENTS: VocabPhrase[] = [
   { 
     id: 'dc-06', 
     phrase: 'What do you think?', 
-    ipa: '/wɒt duː juː θɪŋk/',
-    vietnamese: 'Con nghĩ thế nào về điều này?',
+    response: 'I think it is great! / I agree.',
+    ipa: '/wɒt duː juː θɪŋk/ -> /aɪ θɪŋk ɪt ɪz ɡreɪt/',
+    vietnamese: 'Con nghĩ thế nào về điều này? / Ý kiến của con ra sao?',
     context: 'Khuyến khích học sinh nói lên ý kiến cá nhân và tư duy phản biện.',
     emoji: '🧠', 
     vocabCategory: 'Daily Communication', 
@@ -539,20 +543,115 @@ const DAILY_TEACHER_STUDENTS: VocabPhrase[] = [
   },
   { 
     id: 'dc-07', 
-    phrase: 'Can you say it in English?', 
-    ipa: '/kæn juː seɪ ɪt ɪn ˈɪŋɡlɪʃ/',
-    vietnamese: 'Con có thể diễn đạt bằng tiếng Anh được không nào?',
-    context: 'Khích lệ học sinh chuyển ngữ sang tiếng Anh tự nhiên trong giờ học.',
-    emoji: '🇬🇧', 
+    phrase: "Thank you so much/-You're welcome.", 
+    response: "You're welcome!",
+    ipa: '/θæŋk juː səʊ mʌtʃ/ -> /jɔː ˈwelkəm/',
+    vietnamese: 'Cảm ơn con rất nhiều! -> Dạ không có gì ạ!',
+    context: 'Văn hóa cảm ơn và đáp lời lịch sự, thân thiện giữa giáo viên và học sinh.',
+    emoji: '💐', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Teacher ↔ Students', 
     order: 7 
+  },
+  { 
+    id: 'dc-08', 
+    phrase: 'Look at the board, please!', 
+    response: 'Yes, teacher!',
+    ipa: '/lʊk æt ðə bɔːd, pliːz/ -> /jes, ˈtiːtʃər/',
+    vietnamese: 'Xin cả lớp hãy nhìn lên bảng nào!',
+    context: 'Thu hút sự chú ý của toàn thể học sinh hướng về phía bảng đen khi cô giảng bài.',
+    emoji: '👀', 
+    vocabCategory: 'Daily Communication', 
+    subGroup: 'Teacher ↔ Students', 
+    order: 8 
+  },
+  { 
+    id: 'dc-09', 
+    phrase: 'Come in, please!', 
+    response: 'Thank you, teacher!',
+    ipa: '/kʌm ɪn, pliːz/ -> /θæŋk juː, ˈtiːtʃər/',
+    vietnamese: 'Mời em vào lớp!',
+    context: 'Cho phép học sinh vào lớp khi vào muộn hoặc sau khi xin phép ra ngoài.',
+    emoji: '🚪', 
+    vocabCategory: 'Daily Communication', 
+    subGroup: 'Teacher ↔ Students', 
+    order: 9 
+  },
+  { 
+    id: 'dc-10', 
+    phrase: 'One voice, please!', 
+    response: 'Listening ears on! Shhh...',
+    ipa: '/wʌn vɔɪs, pliːz/ -> /ʃʃʃ.../',
+    vietnamese: 'Giữ trật tự, chỉ một người nói thôi nhé!',
+    context: 'Khẩu lệnh quản lý trật tự lớp học, nhắc nhở cả lớp lắng nghe người đang phát biểu.',
+    emoji: '🤫', 
+    vocabCategory: 'Daily Communication', 
+    subGroup: 'Teacher ↔ Students', 
+    order: 10 
+  },
+  { 
+    id: 'dc-11', 
+    phrase: 'Pay attention, please!', 
+    response: 'Yes, teacher! We are ready!',
+    ipa: '/peɪ əˈtenʃn, pliːz/ -> /jes, ˈtiːtʃər/',
+    vietnamese: 'Xin cả lớp hãy chú ý! / Tập trung nào các con!',
+    context: 'Nhắc nhở học sinh tập trung vào bài giảng khi có dấu hiệu xao nhãng.',
+    emoji: '📢', 
+    vocabCategory: 'Daily Communication', 
+    subGroup: 'Teacher ↔ Students', 
+    order: 11 
+  },
+  { 
+    id: 'dc-12', 
+    phrase: 'Have you finished?', 
+    response: 'Yes, I have! / Not yet, teacher!',
+    ipa: '/hæv juː ˈfɪnɪʃt/ -> /jes, aɪ hæv/',
+    vietnamese: 'Các con đã làm xong chưa? -> Dạ xong rồi ạ / Dạ chưa ạ!',
+    context: 'Kiểm tra tiến độ làm bài tập hoặc thảo luận nhóm của học sinh.',
+    emoji: '⏱️', 
+    vocabCategory: 'Daily Communication', 
+    subGroup: 'Teacher ↔ Students', 
+    order: 12 
+  },
+  { 
+    id: 'dc-13', 
+    phrase: 'What does this word mean?', 
+    ipa: '/wɒt dʌz ðɪs wɜːd miːn/',
+    vietnamese: 'Từ này có nghĩa là gì nhỉ các con?',
+    context: 'Khơi gợi học sinh tư duy giải nghĩa từ theo ngữ cảnh bài học.',
+    emoji: '❓', 
+    vocabCategory: 'Daily Communication', 
+    subGroup: 'Teacher ↔ Students', 
+    order: 13 
+  },
+  { 
+    id: 'dc-14', 
+    phrase: 'Can anyone help?', 
+    ipa: '/kæn ˈeniwʌn help/',
+    vietnamese: 'Có bạn nào giúp đỡ bạn được không nào?',
+    context: 'Kêu gọi tinh thần tương trợ và tinh thần đồng đội giữa các bạn trong lớp.',
+    emoji: '🙋', 
+    vocabCategory: 'Daily Communication', 
+    subGroup: 'Teacher ↔ Students', 
+    order: 14 
+  },
+  { 
+    id: 'dc-15', 
+    phrase: 'Any questions?', 
+    response: 'No questions, teacher!',
+    ipa: '/ˈeni ˈkwestʃənz/ -> /nəʊ ˈkwestʃənz, ˈtiːtʃər/',
+    vietnamese: 'Có bạn nào có thắc mắc gì không? -> Dạ không ạ!',
+    context: 'Tạo không gian mở cho học sinh đặt câu hỏi nếu còn điểm chưa rõ.',
+    emoji: '💭', 
+    vocabCategory: 'Daily Communication', 
+    subGroup: 'Teacher ↔ Students', 
+    order: 15 
   },
 ];
 
 const DAILY_STUDENTS_STUDENTS: VocabPhrase[] = [
   { 
-    id: 'dc-08', 
+    id: 'dc-16', 
     phrase: 'Can I help you?', 
     response: 'Yes, please / No, thank you',
     ipa: '/kæn aɪ help juː/',
@@ -561,10 +660,10 @@ const DAILY_STUDENTS_STUDENTS: VocabPhrase[] = [
     emoji: '🤝', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Students ↔ Students', 
-    order: 8 
+    order: 16 
   },
   { 
-    id: 'dc-09', 
+    id: 'dc-17', 
     phrase: "I don't understand.", 
     ipa: '/aɪ dəʊnt ˌʌndəˈstænd/',
     vietnamese: 'Tớ/Em chưa hiểu phần này lắm.',
@@ -572,10 +671,10 @@ const DAILY_STUDENTS_STUDENTS: VocabPhrase[] = [
     emoji: '😕', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Students ↔ Students', 
-    order: 9 
+    order: 17 
   },
   { 
-    id: 'dc-10', 
+    id: 'dc-18', 
     phrase: 'Let me try.', 
     ipa: '/let miː traɪ/',
     vietnamese: 'Để tớ thử làm xem nào!',
@@ -583,10 +682,10 @@ const DAILY_STUDENTS_STUDENTS: VocabPhrase[] = [
     emoji: '✨', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Students ↔ Students', 
-    order: 10 
+    order: 18 
   },
   { 
-    id: 'dc-11', 
+    id: 'dc-19', 
     phrase: 'I think...', 
     ipa: '/aɪ θɪŋk.../',
     vietnamese: 'Tớ nghĩ là...',
@@ -594,10 +693,10 @@ const DAILY_STUDENTS_STUDENTS: VocabPhrase[] = [
     emoji: '💡', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Students ↔ Students', 
-    order: 11 
+    order: 19 
   },
   { 
-    id: 'dc-12', 
+    id: 'dc-20', 
     phrase: 'I agree with you.', 
     ipa: '/aɪ əˈɡriː wɪð juː/',
     vietnamese: 'Tớ đồng ý với ý kiến của bạn.',
@@ -605,10 +704,10 @@ const DAILY_STUDENTS_STUDENTS: VocabPhrase[] = [
     emoji: '✅', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Students ↔ Students', 
-    order: 12 
+    order: 20 
   },
   { 
-    id: 'dc-13', 
+    id: 'dc-21', 
     phrase: 'Your turn.', 
     ipa: '/jɔː tɜːn/',
     vietnamese: 'Đến lượt của bạn rồi đấy!',
@@ -616,10 +715,10 @@ const DAILY_STUDENTS_STUDENTS: VocabPhrase[] = [
     emoji: '👉', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Students ↔ Students', 
-    order: 13 
+    order: 21 
   },
   { 
-    id: 'dc-14', 
+    id: 'dc-22', 
     phrase: 'Thank you very much.', 
     ipa: '/θæŋk juː ˈveri mʌtʃ/',
     vietnamese: 'Cảm ơn bạn rất nhiều nhé!',
@@ -627,10 +726,10 @@ const DAILY_STUDENTS_STUDENTS: VocabPhrase[] = [
     emoji: '🙏', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Students ↔ Students', 
-    order: 14 
+    order: 22 
   },
   { 
-    id: 'dc-15', 
+    id: 'dc-23', 
     phrase: "You're welcome.", 
     ipa: '/jɔː ˈwelkəm/',
     vietnamese: 'Không có gì đâu bạn ơi!',
@@ -638,7 +737,7 @@ const DAILY_STUDENTS_STUDENTS: VocabPhrase[] = [
     emoji: '😊', 
     vocabCategory: 'Daily Communication', 
     subGroup: 'Students ↔ Students', 
-    order: 15 
+    order: 23 
   },
 ];
 

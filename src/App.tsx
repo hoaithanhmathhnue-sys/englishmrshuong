@@ -231,8 +231,22 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFFDF5] text-slate-900 sunflower-bg-pattern relative">
+    <div className="min-h-screen flex flex-col bg-[#FFFDF5] text-slate-900 sunflower-bg-pattern relative overflow-x-hidden">
       
+      {/* 2 Bông hoa hướng dương background kích thước lớn to đẹp ở hai bên */}
+      <div 
+        className="fixed -left-8 sm:-left-12 lg:-left-16 top-1/4 text-7xl sm:text-8xl lg:text-9xl select-none pointer-events-none opacity-25 filter drop-shadow-xl z-0 animate-float-sunflower hidden md:block" 
+        aria-hidden="true"
+      >
+        🌻
+      </div>
+      <div 
+        className="fixed -right-8 sm:-right-12 lg:-right-16 top-1/2 text-7xl sm:text-8xl lg:text-9xl select-none pointer-events-none opacity-25 filter drop-shadow-xl z-0 animate-float-sunflower-reverse hidden md:block" 
+        aria-hidden="true"
+      >
+        🌻
+      </div>
+
       {/* Sticky Top Navigation with Sunflower theme */}
       <Navbar
         activeTab={activeTab}

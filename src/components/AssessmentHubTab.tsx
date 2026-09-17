@@ -306,7 +306,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
                   type="text"
                   value={teacherName}
                   onChange={(e) => setTeacherName(e.target.value)}
-                  placeholder="Ví dụ: Cô Nguyễn Thu Hà"
+                  placeholder="Ví dụ: Cô Cù Thị Mỹ Dung"
                   required
                   className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-blue-500"
                 />
