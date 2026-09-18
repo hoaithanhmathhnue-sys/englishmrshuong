@@ -14,7 +14,7 @@ const DEFAULT_PROGRESS: UserProgress = {
   bookmarkedIds: [],
   practiceScores: {},
   profile: {
-    name: '',
+    name: 'Cô Lê Thị Thu Hương',
     school: 'Trường Tiểu học Lê Kim Lăng',
     title: 'Giáo viên Tiểu học'
   },
@@ -35,6 +35,17 @@ export function loadUserProgress(): UserProgress {
     const data: UserProgress = JSON.parse(raw);
     if (data.goldenSeeds === undefined) {
       data.goldenSeeds = 0;
+    }
+
+    // Auto-update profile name if empty or previously set to demo name
+    if (!data.profile || !data.profile.name || data.profile.name.includes('Cù Thị Mỹ Dung') || data.profile.name.includes('Mỹ Dung')) {
+      data.profile = {
+        ...(data.profile || {}),
+        name: 'Cô Lê Thị Thu Hương',
+        school: data.profile?.school || 'Trường Tiểu học Lê Kim Lăng',
+        title: 'Giáo viên Tiểu học'
+      };
+      saveUserProgress(data);
     }
     
     // Check and update streak
@@ -77,7 +88,19 @@ export function loadCommunityPosts(): CommunityPost[] {
       localStorage.setItem(STORAGE_KEY_COMMUNITY, JSON.stringify(INITIAL_COMMUNITY_POSTS));
       return INITIAL_COMMUNITY_POSTS;
     }
-    return JSON.parse(raw);
+    const parsed: CommunityPost[] = JSON.parse(raw);
+    let updated = false;
+    const posts = parsed.map(post => {
+      if (post.authorName && (post.authorName.includes('Cù Thị Mỹ Dung') || post.authorName.includes('Mỹ Dung'))) {
+        updated = true;
+        return { ...post, authorName: 'Cô Lê Thị Thu Hương' };
+      }
+      return post;
+    });
+    if (updated) {
+      saveCommunityPosts(posts);
+    }
+    return posts;
   } catch (e) {
     return INITIAL_COMMUNITY_POSTS;
   }

@@ -42,9 +42,18 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
   onCompleteQuiz
 }) => {
   // Profile state for certificate
-  const [teacherName, setTeacherName] = useState(progress.profile.name);
-  const [teacherSchool, setTeacherSchool] = useState(progress.profile.school);
+  const [teacherName, setTeacherName] = useState(progress.profile.name || 'Cô Lê Thị Thu Hương');
+  const [teacherSchool, setTeacherSchool] = useState(progress.profile.school || 'Trường Tiểu học Lê Kim Lăng');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+
+  React.useEffect(() => {
+    if (progress.profile.name) {
+      setTeacherName(progress.profile.name);
+    }
+    if (progress.profile.school) {
+      setTeacherSchool(progress.profile.school);
+    }
+  }, [progress.profile]);
 
   // Quiz state
   const [currentQIndex, setCurrentQIndex] = useState(0);
@@ -306,7 +315,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
                   type="text"
                   value={teacherName}
                   onChange={(e) => setTeacherName(e.target.value)}
-                  placeholder="Ví dụ: Cô Cù Thị Mỹ Dung"
+                  placeholder="Ví dụ: Cô Lê Thị Thu Hương"
                   required
                   className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-hidden focus:border-blue-500"
                 />
@@ -371,7 +380,7 @@ export const AssessmentHubTab: React.FC<AssessmentHubTabProps> = ({
               <div className="space-y-2 py-2">
                 <div className="text-xs text-slate-600 italic font-serif-body">Chứng nhận danh dự trao tặng cho Thầy/Cô:</div>
                 <div className="text-2xl sm:text-3xl font-black text-amber-900 tracking-wide font-serif-cert">
-                  {teacherName || 'Thầy/Cô Giáo Viên'}
+                  {teacherName || 'Cô Lê Thị Thu Hương'}
                 </div>
                 <div className="text-sm font-semibold text-slate-700 font-sans">
                   {teacherSchool || 'Trường Tiểu học Lê Kim Lăng'}

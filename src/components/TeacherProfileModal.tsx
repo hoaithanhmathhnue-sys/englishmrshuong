@@ -15,8 +15,15 @@ export const TeacherProfileModal: React.FC<TeacherProfileModalProps> = ({
   progress,
   onSaveProfile
 }) => {
-  const [name, setName] = useState(progress.profile.name);
-  const [school, setSchool] = useState(progress.profile.school);
+  const [name, setName] = useState(progress.profile.name || 'Cô Lê Thị Thu Hương');
+  const [school, setSchool] = useState(progress.profile.school || 'Trường Tiểu học Lê Kim Lăng');
+
+  React.useEffect(() => {
+    if (isOpen) {
+      setName(progress.profile.name || 'Cô Lê Thị Thu Hương');
+      setSchool(progress.profile.school || 'Trường Tiểu học Lê Kim Lăng');
+    }
+  }, [isOpen, progress.profile]);
 
   if (!isOpen) return null;
 
@@ -78,7 +85,7 @@ export const TeacherProfileModal: React.FC<TeacherProfileModalProps> = ({
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ví dụ: Cô Cù Thị Mỹ Dung"
+                placeholder="Ví dụ: Cô Lê Thị Thu Hương"
                 className="w-full pl-9 pr-3 py-2.5 text-xs font-medium rounded-xl border border-slate-300 focus:outline-hidden focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
             </div>

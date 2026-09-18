@@ -24,7 +24,7 @@ export const CLASSROOM_SCENARIOS: ScenarioItem[] = [
       {
         id: 'opt-1c',
         englishText: 'Quiet! Everybody shut up!',
-        vietnameseText: 'Im lặng! Tất cả câm mồm!',
+        vietnameseText: 'Im lặng! Hãy im lặng ngay cho tôi!',
         rationale: 'Vi phạm chuẩn mực đạo đức nhà giáo và tạo môi trường học tập căng thẳng, thô lỗ.',
         isBest: false
       }
