@@ -410,76 +410,13 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
     <div className="space-y-7 pb-16">
 
       {/* ═══ HERO BANNER ═══ */}
-      <div className="rounded-3xl overflow-hidden border border-amber-300/70 shadow-md animate-fadeInUp relative" style={{ background: 'linear-gradient(135deg, #FFF3CC 0%, #FFE99A 25%, #FFFBE5 50%, #FFF3CC 75%, #FFE99A 100%)' }}>
-        {/* Sunflower field decorative elements */}
-        <div className="absolute bottom-0 left-0 right-0 flex items-end justify-center gap-1 pointer-events-none select-none opacity-30 overflow-hidden">
-          {Array.from({ length: 14 }).map((_, i) => (
-            <span key={i} className="text-2xl sm:text-3xl" style={{ transform: `translateY(${Math.random() * 8}px) rotate(${Math.random() * 20 - 10}deg)` }}>🌻</span>
-          ))}
-        </div>
-
-        <div className="flex flex-col lg:flex-row items-stretch relative z-10">
-          {/* Left: Slogan */}
-          <div className="flex-1 p-5 sm:p-7 lg:p-8 relative">
-            {/* Decorative sunflower top-left */}
-            <div className="absolute -left-3 -top-3 text-5xl sm:text-6xl opacity-40 select-none pointer-events-none animate-float-sunflower">🌻</div>
-            
-            <div className="relative z-10 space-y-3">
-              <h1 className="text-2xl sm:text-3xl lg:text-[2.5rem] font-black leading-tight italic">
-                <span className="text-amber-700">Nói tiếng Anh mỗi ngày</span><br/>
-                <span className="text-slate-700 text-xl sm:text-2xl lg:text-3xl">– Kết nối yêu thương,</span><br/>
-                <span className="text-slate-700 text-xl sm:text-2xl lg:text-3xl">lan tỏa nụ cười! </span>
-                <span className="text-red-500 not-italic text-2xl sm:text-3xl">♥</span>
-              </h1>
-              
-              <p className="text-[11px] sm:text-xs text-slate-500 italic max-w-sm">
-                "Small phrases – Big connections for a brighter classroom!"
-              </p>
-
-              {/* Chalkboard-style Badge */}
-              <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full shadow-md" style={{ background: 'linear-gradient(135deg, #2D5016 0%, #3A6B1E 50%, #2D5016 100%)' }}>
-                <span className="text-lg">🌻</span>
-                <span className="text-xs sm:text-sm font-black text-white tracking-wide" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
-                  Better English · Brighter Future
-                </span>
-                <span className="text-sm">💛</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Center: Sunflower Mascot */}
-          <div className="hidden lg:flex items-center justify-center px-4 py-6 relative">
-            {/* Big sunflower mascot */}
-            <div className="relative">
-              <div className="text-[80px] xl:text-[100px] animate-float-sunflower drop-shadow-lg select-none">
-                🌻
-              </div>
-              {/* Small sunflowers around */}
-              <div className="absolute -left-6 bottom-2 text-3xl animate-float-sunflower-reverse select-none opacity-70">🌻</div>
-              <div className="absolute -right-5 bottom-4 text-2xl animate-float-sunflower select-none opacity-60" style={{ animationDelay: '1s' }}>🌻</div>
-              <div className="absolute left-1 -top-2 text-xl animate-float-sunflower-reverse select-none opacity-50" style={{ animationDelay: '0.5s' }}>🌻</div>
-            </div>
-          </div>
-
-          {/* Right: Quote card */}
-          <div className="lg:w-[280px] xl:w-[300px] p-4 sm:p-5 lg:p-6 flex items-center shrink-0">
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 border border-amber-200/80 shadow-sm space-y-2.5 w-full">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-base shrink-0 sunflower-glow">
-                  🌻
-                </div>
-                <p className="text-[11px] sm:text-xs font-bold text-amber-800 leading-snug">
-                  Hôm nay, hãy tạo những khoảnh khắc tiếng Anh thật ý nghĩa nhé! 🌈
-                </p>
-              </div>
-              <div className="bg-amber-50/80 rounded-xl p-3 border border-amber-100/80">
-                <p className="text-[10px] sm:text-[11px] text-slate-500 italic leading-relaxed">
-                  " Every word you teach plants a seed of confidence in your students."
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="rounded-3xl overflow-hidden border border-amber-300/70 shadow-lg animate-fadeInUp">
+        <img
+          src="/hero-banner.png"
+          alt="Nói tiếng Anh mỗi ngày – Kết nối yêu thương, lan tỏa nụ cười! ♥ Learn English · Brighter Future"
+          className="w-full h-auto block"
+          draggable={false}
+        />
       </div>
 
       {/* ═══ 6 CATEGORY CARDS ═══ */}
