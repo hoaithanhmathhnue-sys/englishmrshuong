@@ -3,6 +3,9 @@ import {
   Navbar 
 } from './components/Navbar';
 import { 
+  Sidebar 
+} from './components/Sidebar';
+import { 
   DashboardTab 
 } from './components/DashboardTab';
 import { 
@@ -56,7 +59,8 @@ import {
   UserProgress, 
   CommunityPost,
   LearningHistoryEntry,
-  HistoryEntryType
+  HistoryEntryType,
+  VocabCategory
 } from './types';
 
 export default function App() {
@@ -69,6 +73,7 @@ export default function App() {
   const [isMobileNoticeOpen, setIsMobileNoticeOpen] = useState(false);
   const [isFlashcardOpen, setIsFlashcardOpen] = useState(false);
   const [learningHistory, setLearningHistory] = useState<LearningHistoryEntry[]>(loadLearningHistory);
+  const [sidebarCategory, setSidebarCategory] = useState<VocabCategory | null>(null);
 
   // Helper to add a history entry
   const logHistory = (type: HistoryEntryType, title: string, details?: string) => {
@@ -93,6 +98,12 @@ export default function App() {
     }
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Sidebar category selection
+  const handleSelectCategory = (category: VocabCategory) => {
+    setSidebarCategory(category);
+    setActiveTab('dashboard');
   };
 
   // Toggle Bookmark
@@ -232,22 +243,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDF5] text-slate-900 sunflower-bg-pattern relative overflow-x-hidden">
-      
-      {/* 2 Bông hoa hướng dương background kích thước lớn to đẹp ở hai bên */}
-      <div 
-        className="fixed -left-8 sm:-left-12 lg:-left-16 top-1/4 text-7xl sm:text-8xl lg:text-9xl select-none pointer-events-none opacity-25 filter drop-shadow-xl z-0 animate-float-sunflower hidden md:block" 
-        aria-hidden="true"
-      >
-        🌻
-      </div>
-      <div 
-        className="fixed -right-8 sm:-right-12 lg:-right-16 top-1/2 text-7xl sm:text-8xl lg:text-9xl select-none pointer-events-none opacity-25 filter drop-shadow-xl z-0 animate-float-sunflower-reverse hidden md:block" 
-        aria-hidden="true"
-      >
-        🌻
-      </div>
 
-      {/* Sticky Top Navigation with Sunflower theme */}
+      {/* Sticky Top Navigation */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={handleNavigateTab}
@@ -258,64 +255,77 @@ export default function App() {
         onOpenFlashcard={() => setIsFlashcardOpen(true)}
       />
 
-      {/* Main Tab Content Viewport */}
-      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
-        {activeTab === 'dashboard' && (
-          <DashboardTab
-            commands={ALL_APP_COMMANDS}
-            progress={progress}
-            learningHistory={learningHistory}
-            onNavigateTab={handleNavigateTab}
-            onToggleBookmark={handleToggleBookmark}
-            onOpenMobileNotice={() => setIsMobileNoticeOpen(true)}
-            onOpenFlashcard={() => setIsFlashcardOpen(true)}
-          />
-        )}
+      {/* Layout: Sidebar + Main Content */}
+      <div className="flex flex-1">
+        {/* Sidebar (desktop only) */}
+        <Sidebar
+          activeTab={activeTab}
+          activeCategory={sidebarCategory}
+          onNavigateTab={handleNavigateTab}
+          onSelectCategory={handleSelectCategory}
+          onOpenFlashcard={() => setIsFlashcardOpen(true)}
+        />
 
-        {activeTab === 'library' && (
-          <CommandLibraryTab
-            commands={ALL_APP_COMMANDS}
-            progress={progress}
-            onNavigateToVoiceLab={(cmdId) => handleNavigateTab('voicelab', cmdId)}
-            onToggleBookmark={handleToggleBookmark}
-          />
-        )}
+        {/* Main Tab Content */}
+        <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pt-5 sm:pt-6">
+          {activeTab === 'dashboard' && (
+            <DashboardTab
+              commands={ALL_APP_COMMANDS}
+              progress={progress}
+              learningHistory={learningHistory}
+              onNavigateTab={handleNavigateTab}
+              onToggleBookmark={handleToggleBookmark}
+              onOpenMobileNotice={() => setIsMobileNoticeOpen(true)}
+              onOpenFlashcard={() => setIsFlashcardOpen(true)}
+              externalCategory={sidebarCategory}
+            />
+          )}
 
-        {activeTab === 'voicelab' && (
-          <VoiceLabTab
-            commands={ALL_APP_COMMANDS}
-            initialCommandId={selectedVoiceCommandId}
-            progress={progress}
-            onRecordScore={handleRecordScore}
-          />
-        )}
+          {activeTab === 'library' && (
+            <CommandLibraryTab
+              commands={ALL_APP_COMMANDS}
+              progress={progress}
+              onNavigateToVoiceLab={(cmdId) => handleNavigateTab('voicelab', cmdId)}
+              onToggleBookmark={handleToggleBookmark}
+            />
+          )}
 
-        {activeTab === 'aigenerator' && (
-          <LessonAiGeneratorTab
-            onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
-            onNavigateToVoiceLab={(cmdId) => handleNavigateTab('voicelab', cmdId)}
-          />
-        )}
+          {activeTab === 'voicelab' && (
+            <VoiceLabTab
+              commands={ALL_APP_COMMANDS}
+              initialCommandId={selectedVoiceCommandId}
+              progress={progress}
+              onRecordScore={handleRecordScore}
+            />
+          )}
 
-        {activeTab === 'arcade' && (
-          <SunflowerArcadeTab
-            commands={ALL_APP_COMMANDS}
-            onRewardSeeds={handleRewardSeeds}
-            onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
-            onAddHistory={(type, title, details) => logHistory(type, title, details)}
-          />
-        )}
+          {activeTab === 'aigenerator' && (
+            <LessonAiGeneratorTab
+              onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
+              onNavigateToVoiceLab={(cmdId) => handleNavigateTab('voicelab', cmdId)}
+            />
+          )}
 
-        {activeTab === 'certification' && (
-          <AssessmentHubTab
-            progress={progress}
-            onUpdateProfile={handleUpdateProfile}
-            onUnlockBadge={handleUnlockBadge}
-            onCompleteQuiz={handleCompleteQuiz}
-          />
-        )}
+          {activeTab === 'arcade' && (
+            <SunflowerArcadeTab
+              commands={ALL_APP_COMMANDS}
+              onRewardSeeds={handleRewardSeeds}
+              onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
+              onAddHistory={(type, title, details) => logHistory(type, title, details)}
+            />
+          )}
 
-      </main>
+          {activeTab === 'certification' && (
+            <AssessmentHubTab
+              progress={progress}
+              onUpdateProfile={handleUpdateProfile}
+              onUnlockBadge={handleUnlockBadge}
+              onCompleteQuiz={handleCompleteQuiz}
+            />
+          )}
+
+        </main>
+      </div>
 
       {/* Mini Floating Dock điều hành lớp học trực tiếp trên bục giảng */}
       <MiniFloatingDock onNavigateTab={handleNavigateTab} />
@@ -347,7 +357,7 @@ export default function App() {
         commands={ALL_APP_COMMANDS}
       />
 
-      {/* Professional Footer inspired by cô Bình reference app */}
+      {/* Professional Footer */}
       <Footer 
         onNavigateTab={handleNavigateTab} 
         onOpenMobileNotice={() => setIsMobileNoticeOpen(true)}
